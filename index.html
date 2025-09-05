@@ -23,10 +23,6 @@
             color: #e5e5e5;
             background: #0a0a0a;
             scroll-behavior: smooth;
-            cursor: none;
-        }
-        body a, body button {
-            cursor: none;
         }
         #hero-canvas-container {
             position: absolute;
@@ -49,6 +45,7 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
+        .ai-response { white-space: pre-wrap; background: #1a1a1a; border-left: 3px solid var(--sky-500); }
         .fade-in-up { 
             opacity: 0; 
             transform: translateY(30px); 
@@ -73,6 +70,7 @@
         .accordion-item.active .accordion-content { max-height: 1000px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
         .accordion-item .accordion-icon { transition: transform 0.3s ease-out; }
         .accordion-item.active .accordion-icon { transform: rotate(45deg); }
+        .trending-badge { background-color: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.5); font-size: 0.7rem; padding: 2px 6px; border-radius: 99px; margin-left: 6px; vertical-align: middle; }
         
         /* Pagination Styles */
         .pagination-btn { background-color: var(--gray-800); border: 1px solid var(--sky-500); color: white; padding: 8px 16px; border-radius: 8px; transition: background-color 0.2s; position: relative; overflow: hidden;}
@@ -84,7 +82,18 @@
             background-color: transparent; border: 1px solid; padding: 0.5rem 1rem; border-radius: 9999px;
             transition: all 0.2s ease-in-out; font-weight: 500; position: relative; overflow: hidden;
         }
+        .filter-btn[data-filter="all"] { border-color: rgba(255, 255, 255, 0.4); color: #a0aec0; }
+        .filter-btn[data-filter="ai"] { border-color: var(--purple-500); color: var(--purple-500); }
+        .filter-btn[data-filter="devops"] { border-color: var(--green-400); color: var(--green-400); }
+        .filter-btn[data-filter="cloud"] { border-color: var(--orange-400); color: var(--orange-400); }
+        .filter-btn[data-filter="app_data"] { border-color: var(--yellow-400); color: var(--yellow-400); }
+        .filter-btn:hover { color: white; opacity: 0.8; }
         .filter-btn.active { color: white; opacity: 1; }
+        .filter-btn[data-filter="all"].active { background-color: var(--sky-500); border-color: var(--sky-500); }
+        .filter-btn[data-filter="ai"].active { background-color: var(--purple-500); }
+        .filter-btn[data-filter="devops"].active { background-color: var(--green-400); }
+        .filter-btn[data-filter="cloud"].active { background-color: var(--orange-400); }
+        .filter-btn[data-filter="app_data"].active { background-color: var(--yellow-400); }
         .tool-card {
             transition: transform 0.3s ease, opacity 0.5s ease;
             border-top: 3px solid transparent;
@@ -137,7 +146,7 @@
         .interactive-border::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 0.75rem; padding: 1px;
-            background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 80%);
+            background: radial-gradient(150px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 80%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: destination-out; mask-composite: subtract;
             opacity: 0; transition: opacity 0.3s ease;
@@ -151,28 +160,25 @@
         .interactive-border-yellow { --glow-color: rgba(250, 204, 21, 0.5); }
         
         /* Process Steps */
-        .process-step { position: relative; cursor: pointer; }
+        .process-step-container { position: relative; }
+        .process-step { cursor: pointer; }
         .process-step .step-circle { transition: all 0.3s ease; }
-        .process-step.active .step-circle { transform: scale(1.1); box-shadow: 0 0 20px var(--glow-color) }
-        .process-step:not(:last-child)::after {
-            content: ''; position: absolute; top: 2.5rem; left: 50%;
-            width: calc(100% + 2rem); height: 2px;
-            background: linear-gradient(to right, var(--sky-500), var(--purple-500));
-            opacity: 0.3; transform: translateX(-50%); z-index: -1;
+        .process-step-container.active .process-step .step-circle { 
+            transform: scale(1.1); 
+            box-shadow: 0 0 20px var(--glow-color); 
         }
-        @media (max-width: 1023px) { .process-step:not(:last-child)::after { display: none; } }
-
-        /* Custom Cursor */
-        .custom-cursor {
-            position: fixed; top: 0; left: 0;
-            z-index: 1000; pointer-events: none;
-            mix-blend-mode: difference;
+        .process-description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, margin-top 0.5s ease-out, opacity 0.5s ease-out;
+            opacity: 0;
+            grid-column: 1 / -1;
         }
-        .cursor-dot {
-            width: 8px; height: 8px; background-color: white; border-radius: 50%;
-            transition: transform 0.2s ease-out;
+        .process-step-container.active .process-description {
+            max-height: 500px;
+            margin-top: 1rem;
+            opacity: 1;
         }
-        .cursor-dot.hovered { transform: scale(4); }
         
         /* Scroll Progress Bar */
         #scroll-progress-bar {
@@ -182,20 +188,100 @@
             transition: width 0.1s ease-out;
         }
 
+        /* Side Navigation */
+        #side-nav {
+            position: fixed; top: 50%; right: 1.5rem;
+            transform: translateY(-50%); z-index: 40;
+            background: rgba(17, 17, 17, 0.6); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem; border-radius: 9999px;
+            display: none;
+        }
+        #side-nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem; }
+        #side-nav a {
+            display: block; width: 12px; height: 12px;
+            border-radius: 50%; background-color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease; position: relative;
+        }
+        #side-nav a.active { background-color: var(--sky-500); transform: scale(1.5); }
+        #side-nav a .nav-tooltip {
+            position: absolute; top: 50%; right: 150%;
+            transform: translateY(-50%); background-color: var(--gray-800);
+            color: white; padding: 0.25rem 0.75rem; border-radius: 6px;
+            font-size: 0.875rem; white-space: nowrap; opacity: 0;
+            pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #side-nav a:hover .nav-tooltip { opacity: 1; }
+        @media (max-width: 1280px) { #side-nav { display: none !important; } }
+
+        /* Main Nav Active State */
+        #main-header nav a { 
+            position: relative; 
+            transition: color 0.3s ease; 
+            padding-bottom: 6px; 
+        }
+        #main-header nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: currentColor;
+            transition: width 0.3s ease-in-out;
+        }
+        #main-header nav a:hover::after,
+        #main-header nav a.nav-active::after {
+            width: 100%;
+        }
+
+        /* Gradient colors for nav links */
+        #main-header nav a:not(:last-child) {
+            color: #a0aec0;
+        }
+        
+        #main-header nav a:nth-child(1):hover,
+        #main-header nav a:nth-child(1).nav-active { color: #0ea5e9; }
+        
+        #main-header nav a:nth-child(2):hover,
+        #main-header nav a:nth-child(2).nav-active { color: #4c89f1; } 
+        
+        #main-header nav a:nth-child(3):hover,
+        #main-header nav a:nth-child(3).nav-active { color: #7d68f6; } 
+        
+        #main-header nav a:nth-child(4):hover,
+        #main-header nav a:nth-child(4).nav-active { color: #a155fa; }
+        
+        #main-header nav a:nth-child(5):hover,
+        #main-header nav a:nth-child(5).nav-active { color: #b94ffc; }
+
+        #main-header nav a:nth-child(6):hover,
+        #main-header nav a:nth-child(6).nav-active { color: #d04dfd; }
+
+        #main-header nav a:last-child,
+        #main-header nav a:last-child:hover {
+            color: white;
+        }
+        #main-header nav a:last-child::after {
+            display: none; 
+        }
+
+
     </style>
 </head>
 <body class="antialiased">
     <div id="scroll-progress-bar"></div>
-    <div class="custom-cursor"><div class="cursor-dot"></div></div>
+    <nav id="side-nav"></nav>
 
     <!-- Header -->
     <header id="main-header" class="fixed top-0 left-0 right-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold tracking-tighter">Claudio Botelho</h1>
-            <nav class="hidden md:flex space-x-8 items-center"><a href="#sobre" class="hover:text-sky-400">Sobre</a><a href="#filosofia" class="hover:text-sky-400">Filosofia</a><a href="#metodologia" class="hover:text-sky-400">Metodologia</a><a href="#projetos" class="hover:text-sky-400">Projetos</a><a href="#artigos" class="hover:text-sky-400">Artigos</a><a href="#contato" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg relative overflow-hidden">Contato</a></nav>
+            <nav class="hidden md:flex space-x-8 items-center"><a href="#sobre">Sobre</a><a href="#filosofia">Filosofia</a><a href="#metodologia">Metodologia</a><a href="#toolbox">Ferramentas</a><a href="#projetos">Projetos</a><a href="#artigos">Artigos</a><a href="#contato" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg relative overflow-hidden">Contato</a></nav>
             <button id="mobile-menu-button" class="md:hidden text-2xl">☰</button>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden"><a href="#sobre" class="block py-2 px-6 hover:bg-gray-800">Sobre</a><a href="#filosofia" class="block py-2 px-6 hover:bg-gray-800">Filosofia</a><a href="#metodologia" class="block py-2 px-6 hover:bg-gray-800">Metodologia</a><a href="#projetos" class="block py-2 px-6 hover:bg-gray-800">Projetos</a><a href="#artigos" class="block py-2 px-6 hover:bg-gray-800">Artigos</a><a href="#contato" class="block py-2 px-6 hover:bg-gray-800">Contato</a></div>
+        <div id="mobile-menu" class="hidden md:hidden"><a href="#sobre" class="block py-2 px-6 hover:bg-gray-800">Sobre</a><a href="#filosofia" class="block py-2 px-6 hover:bg-gray-800">Filosofia</a><a href="#metodologia" class="block py-2 px-6 hover:bg-gray-800">Metodologia</a><a href="#toolbox" class="block py-2 px-6 hover:bg-gray-800">Ferramentas</a><a href="#projetos" class="block py-2 px-6 hover:bg-gray-800">Projetos</a><a href="#artigos" class="block py-2 px-6 hover:bg-gray-800">Artigos</a><a href="#contato" class="block py-2 px-6 hover:bg-gray-800">Contato</a></div>
     </header>
 
     <main class="relative">
@@ -217,7 +303,7 @@
             </div>
         </section>
 
-        <div class="bg-black relative z-20"> <!-- Wrapper for the rest of the content -->
+        <div class="bg-black relative z-20"> 
 
             <!-- My Philosophy Section -->
             <section id="filosofia" class="py-20 container mx-auto px-6">
@@ -259,15 +345,31 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- Toolbox Section -->
+            <section id="toolbox" class="py-20 container mx-auto px-6">
+                <div class="text-center mb-12 fade-in-up">
+                    <h3 class="text-4xl font-bold tracking-tighter">Minha Caixa de Ferramentas</h3>
+                    <p class="text-lg text-gray-400 mt-2">Navegue pelas tecnologias e ferramentas que utilizo no dia a dia.</p>
+                </div>
+                <div id="filter-container" class="flex flex-wrap justify-center gap-4 mb-8 fade-in-up" style="transition-delay: 150ms;">
+                    <button class="filter-btn active" data-filter="all">Todas</button>
+                    <button class="filter-btn" data-filter="ai">IA & AIOps</button>
+                    <button class="filter-btn" data-filter="devops">DevSecOps</button>
+                    <button class="filter-btn" data-filter="cloud">Cloud & SRE</button>
+                    <button class="filter-btn" data-filter="app_data">Aplicação & Dados</button>
+                </div>
+                <div id="tools-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 relative">
+                </div>
+            </section>
 
-            <!-- Projects Section (Structure remains) -->
+            <!-- Projects Section -->
             <section id="projetos" class="py-20 container mx-auto px-6">
                 <div class="text-center mb-12 fade-in-up">
                     <h3 class="text-4xl font-bold tracking-tighter">Projetos Destacados</h3>
                     <p class="text-lg text-gray-400 mt-2">Uma seleção de desafios que solucionamos em equipe.</p>
                 </div>
                 <div id="projects-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Project cards will be injected here by JavaScript -->
                 </div>
                 <div id="pagination-controls" class="flex justify-center items-center mt-12 space-x-4 fade-in-up">
                     <button id="prev-page-btn" class="pagination-btn">Anterior</button>
@@ -326,18 +428,9 @@
                     <p class="text-lg text-gray-400 mt-2">O nosso processo foi desenhado para ser claro, objetivo e focado em resultados.</p>
                 </div>
                 
-                <div id="process-timeline" class="grid lg:grid-cols-6 gap-x-8 gap-y-12 text-center mb-12 fade-in-up" style="transition-delay: 150ms;">
-                    <div class="process-step flex flex-col items-center" data-step="1"><div class="step-circle bg-sky-500/10 border border-sky-500/30 text-sky-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">1</div><h4 class="font-semibold">Diagnóstico</h4></div>
-                    <div class="process-step flex flex-col items-center" data-step="2"><div class="step-circle bg-sky-500/10 border border-sky-500/30 text-sky-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">2</div><h4 class="font-semibold">Planeamento</h4></div>
-                    <div class="process-step flex flex-col items-center" data-step="3"><div class="step-circle bg-sky-500/10 border border-sky-500/30 text-sky-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">3</div><h4 class="font-semibold">Adaptação</h4></div>
-                    <div class="process-step flex flex-col items-center" data-step="4"><div class="step-circle bg-sky-500/10 border border-sky-500/30 text-sky-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">4</div><h4 class="font-semibold">Implementação</h4></div>
-                    <div class="process-step flex flex-col items-center" data-step="5"><div class="step-circle bg-sky-500/10 border border-sky-500/30 text-sky-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">5</div><h4 class="font-semibold">Segurança</h4></div>
-                    <div class="process-step flex flex-col items-center" data-step="6"><div class="step-circle bg-purple-500/10 border border-purple-500/30 text-purple-400 w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2">6</div><h4 class="font-semibold">Otimização</h4></div>
+                <div id="process-timeline" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 text-center mb-12 fade-in-up" style="transition-delay: 150ms;">
                 </div>
-                <div id="process-description-container" class="max-w-4xl mx-auto min-h-[100px]">
-                    <!-- Description will be injected here -->
-                </div>
-
+                
                 <div class="max-w-4xl mx-auto text-center fade-in-up mt-16" style="transition-delay: 300ms;">
                     <h4 class="text-2xl font-bold tracking-tight">Pronto para transformar a sua infraestrutura?</h4>
                     <p class="text-lg text-gray-400 my-4">Agende uma conversa de 30 minutos, sem compromisso, para avaliarmos os seus desafios e definirmos os próximos passos.</p>
@@ -367,14 +460,14 @@
             
             <footer class="text-center py-8 border-t border-gray-800">
                 <div class="flex justify-center space-x-6 mb-4">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub">
+                    <a href="https://github.com/ClaudioBotelhOSB" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="GitHub">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="LinkedIn">
+                    <a href="https://www.linkedin.com/in/claudiosb/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="LinkedIn">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                     </a>
                 </div>
-                <p class="text-gray-500">&copy; 2025 Claudio Botelho | <a href="mailto:exemplo@email.com" class="hover:text-sky-400">exemplo@email.com</a></p>
+                <p class="text-gray-500">&copy; 2025 Claudio Botelho | <a href="mailto:botelho.claudiosb@gmail.com" class="hover:text-sky-400">botelho.claudiosb@gmail.com</a></p>
             </footer>
         </div>
     </main>
@@ -407,16 +500,20 @@
                 mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
             }
 
-            // Header Scroll Effect
+            // Header Scroll Effect & Side Nav Visibility
             const header = document.getElementById('main-header');
             const fab = document.getElementById('fab-to-top');
+            const sideNav = document.getElementById('side-nav');
+
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 50) {
                     header.classList.add('header-scrolled');
                     if (fab) fab.classList.add('visible');
+                    if (sideNav) sideNav.style.display = 'block';
                 } else {
                     header.classList.remove('header-scrolled');
                     if (fab) fab.classList.remove('visible');
+                    if (sideNav) sideNav.style.display = 'none';
                 }
             });
 
@@ -532,6 +629,55 @@
                 init();
                 animate();
             }
+            
+            // Side Navigation
+            const sections = document.querySelectorAll('section[id]');
+            const sideNavContainer = document.getElementById('side-nav');
+            const mainNavLinks = document.querySelectorAll('#main-header nav a');
+
+            if(sections.length > 0) {
+                const navLinks = [];
+                if (sideNavContainer) {
+                    const navList = document.createElement('ul');
+                    sections.forEach(section => {
+                        if (section.id) {
+                            const listItem = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = `#${section.id}`;
+                            const tooltip = document.createElement('span');
+                            tooltip.className = 'nav-tooltip';
+                            tooltip.textContent = section.querySelector('h3')?.textContent.split(' ')[0] || section.id.charAt(0).toUpperCase() + section.id.slice(1);
+                            link.appendChild(tooltip);
+                            listItem.appendChild(link);
+                            navList.appendChild(listItem);
+                            navLinks.push(link);
+                        }
+                    });
+                    sideNavContainer.appendChild(navList);
+                }
+
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const id = entry.target.getAttribute('id');
+                            // Side nav
+                            navLinks.forEach(link => {
+                                link.classList.toggle('active', link.getAttribute('href').substring(1) === id);
+                            });
+                            // Main nav
+                             mainNavLinks.forEach(link => {
+                                link.classList.remove('nav-active');
+                                if (link.getAttribute('href') === `#${id}`) {
+                                    link.classList.add('nav-active');
+                                }
+                            });
+                        }
+                    });
+                }, { rootMargin: '-40% 0px -60% 0px' });
+
+                sections.forEach(section => sectionObserver.observe(section));
+            }
+
 
             // Accordion Logic
             const accordionContainer = document.getElementById('accordion-container');
@@ -770,45 +916,79 @@
         
             // Process Steps Interactive
             const processTimeline = document.getElementById('process-timeline');
-            const processDescriptionContainer = document.getElementById('process-description-container');
-            if (processTimeline && processDescriptionContainer) {
-                 const processDescriptions = {
-                    1: 'Realizamos uma imersão profunda no seu negócio e na sua tecnologia atual. Analisamos a arquitetura, os processos e os dados para identificar os principais desafios e oportunidades de melhoria.',
-                    2: 'Com base no diagnóstico, desenhamos uma solução técnica sob medida e um roadmap estratégico. Esta fase é colaborativa, garantindo o alinhamento total entre a solução técnica e os objetivos de negócio.',
-                    3: 'Nesta fase, focamo-nos em preparar a sua aplicação para a nuvem. Isto pode incluir a refatoração do código, a conteinerização (Docker) e a adaptação de bases de dados para garantir a máxima performance e escalabilidade.',
-                    4: 'Criamos a infraestrutura cloud como código (IaC) utilizando ferramentas como Terraform. Automatizamos todo o processo de deploy com pipelines de CI/CD robustos, garantindo entregas rápidas e seguras.',
-                    5: 'A segurança é integrada em todas as etapas, desde a análise estática do código (SAST) até ao monitoramento em tempo real (Runtime Security). Implementamos uma abordagem Zero Trust para proteger a sua infraestrutura de ponta a ponta.',
-                    6: 'Após o deploy, implementamos uma stack de observabilidade completa (métricas, logs, traces) e utilizamos IA (AIOps) para monitorar a performance, otimizar custos e garantir a evolução contínua do sistema.'
-                };
+            if (processTimeline) {
+                 const processStepsData = [
+                    { step: 1, title: 'Diagnóstico', color: '#0ea5e9', description: 'Realizamos uma imersão profunda no seu negócio e na sua tecnologia atual. Analisamos a arquitetura, os processos e os dados para identificar os principais desafios e oportunidades de melhoria.' },
+                    { step: 2, title: 'Planeamento', color: '#4c89f1', description: 'Com base no diagnóstico, desenhamos uma solução técnica sob medida e um roadmap estratégico. Esta fase é colaborativa, garantindo o alinhamento total entre a solução técnica e os objetivos de negócio.' },
+                    { step: 3, title: 'Adaptação', color: '#7d68f6', description: 'Nesta fase, focamo-nos em preparar a sua aplicação para a nuvem. Isto pode incluir a refatoração do código, a conteinerização (Docker) e a adaptação de bases de dados para garantir a máxima performance e escalabilidade.' },
+                    { step: 4, title: 'Implementação', color: '#a155fa', description: 'Criamos a infraestrutura cloud como código (IaC) utilizando ferramentas como Terraform. Automatizamos todo o processo de deploy com pipelines de CI/CD robustos, garantindo entregas rápidas e seguras.' },
+                    { step: 5, title: 'Segurança', color: '#b94ffc', description: 'A segurança é integrada em todas as etapas, desde a análise estática do código (SAST) até ao monitoramento em tempo real (Runtime Security). Implementamos uma abordagem Zero Trust para proteger a sua infraestrutura de ponta a ponta.' },
+                    { step: 6, title: 'Otimização', color: '#d04dfd', description: 'Após o deploy, implementamos uma stack de observabilidade completa (métricas, logs, traces) e utilizamos IA (AIOps) para monitorar a performance, otimizar custos e garantir a evolução contínua do sistema.' }
+                ];
                 
-                let activeStep = null;
-
-                processTimeline.addEventListener('click', (e) => {
-                    const stepElement = e.target.closest('.process-step');
-                    if (!stepElement) return;
-
-                    const stepNumber = stepElement.dataset.step;
-                    
-                    if (activeStep) {
-                        activeStep.classList.remove('active');
-                    }
-                    stepElement.classList.add('active');
-                    activeStep = stepElement;
-                    
-                    const description = processDescriptions[stepNumber];
-                    processDescriptionContainer.innerHTML = `
-                        <div class="glass-effect p-6 rounded-xl fade-in-up">
-                            <p class="text-center text-gray-300">${description}</p>
+                processStepsData.forEach(stepData => {
+                    const container = document.createElement('div');
+                    container.className = 'process-step-container lg:col-span-1 md:col-span-1';
+                    container.innerHTML = `
+                        <div class="process-step flex flex-col items-center" data-step="${stepData.step}">
+                            <div class="step-circle w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2" style="background-color:${stepData.color}1A; border:1px solid ${stepData.color}4D; color:${stepData.color}; --glow-color: ${stepData.color}80;">
+                                ${stepData.step}
+                            </div>
+                            <h4 class="font-semibold">${stepData.title}</h4>
+                        </div>
+                        <div class="process-description lg:hidden">
+                            <div class="glass-effect p-4 rounded-xl text-sm text-gray-300">
+                                ${stepData.description}
+                            </div>
                         </div>
                     `;
-                    // Trigger animation
-                    setTimeout(() => {
-                        processDescriptionContainer.querySelector('.fade-in-up').classList.add('visible');
-                    }, 10);
+                    processTimeline.appendChild(container);
+                });
+
+                let activeStepContainer = null;
+                const desktopDescriptionContainer = document.getElementById('process-description-container-desktop');
+
+                processTimeline.addEventListener('click', (e) => {
+                    const stepContainer = e.target.closest('.process-step-container');
+                    if (!stepContainer) return;
+                    
+                    // Close the previously active step if it's not the one being clicked
+                    if (activeStepContainer && activeStepContainer !== stepContainer) {
+                        activeStepContainer.classList.remove('active');
+                    }
+                    
+                    // Toggle the clicked step
+                    stepContainer.classList.toggle('active');
+                    
+                    // Update the active step reference
+                    activeStepContainer = stepContainer.classList.contains('active') ? stepContainer : null;
+
+                    // Update desktop description
+                    if (window.innerWidth >= 1024 && desktopDescriptionContainer) {
+                        // Clear description for all first
+                        desktopDescriptionContainer.innerHTML = '';
+                        if (activeStepContainer) {
+                            const stepNumber = activeStepContainer.querySelector('.process-step').dataset.step;
+                            const stepData = processStepsData.find(s => s.step == stepNumber);
+                            const description = stepData ? stepData.description : '';
+                            desktopDescriptionContainer.innerHTML = `
+                                <div class="glass-effect p-6 rounded-xl fade-in-up">
+                                    <p class="text-center text-gray-300">${description}</p>
+                                </div>
+                            `;
+                            setTimeout(() => {
+                                if (desktopDescriptionContainer.querySelector('.fade-in-up')) {
+                                   desktopDescriptionContainer.querySelector('.fade-in-up').classList.add('visible');
+                                }
+                            }, 10);
+                        }
+                    }
                 });
 
                 // Set initial state
-                document.querySelector('.process-step[data-step="1"]').click();
+                if (document.querySelector('.process-step-container')) {
+                    document.querySelector('.process-step-container').click();
+                }
             }
 
             // Contact Form Logic
@@ -817,9 +997,7 @@
             const aiResponseElement=document.getElementById("ai-response");
             const buttonText=document.getElementById("button-text");
             const buttonSpinner=document.getElementById("button-spinner");
-            const challengeButtons = document.getElementById('challenge-buttons');
-            const messageTextarea = document.getElementById('message');
-
+            
             if(contactForm) {
                  contactForm.addEventListener("submit",function(e){e.preventDefault(),buttonText.classList.add("hidden"),buttonSpinner.classList.remove("hidden");let t=document.getElementById("message").value.toLowerCase();setTimeout(()=>{let e=generateAIResponse(t);aiResponseContainer.classList.remove("hidden"),aiResponseContainer.scrollIntoView({behavior:"smooth",block:"center"}),typeWriter(e,aiResponseElement,()=>{buttonText.classList.remove("hidden"),buttonSpinner.classList.add("hidden")})},1e3)});
             }
@@ -885,28 +1063,16 @@
                 });
             });
 
-            // Custom Cursor
-            const cursorDot = document.querySelector('.cursor-dot');
-            const hoverables = document.querySelectorAll('a, button, .interactive-border, .process-step');
-            
-            document.addEventListener('mousemove', (e) => {
-                cursorDot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-            });
-
-            hoverables.forEach(item => {
-                item.addEventListener('mouseenter', () => cursorDot.classList.add('hovered'));
-                item.addEventListener('mouseleave', () => cursorDot.classList.remove('hovered'));
-            });
-
             // Scroll Progress Bar
             const progressBar = document.getElementById('scroll-progress-bar');
-            window.addEventListener('scroll', () => {
-                const scrollTop = document.documentElement.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrollPercent = (scrollTop / scrollHeight) * 100;
-                progressBar.style.width = `${scrollPercent}%`;
-            });
-
+            if (progressBar) {
+                window.addEventListener('scroll', () => {
+                    const scrollTop = document.documentElement.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrollPercent = (scrollTop / scrollHeight) * 100;
+                    progressBar.style.width = `${scrollPercent}%`;
+                });
+            }
         });
     </script>
 </body>
