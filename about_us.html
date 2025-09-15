@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio | Seção de Filosofia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sky-500: #0ea5e9; 
+            --purple-500: #8b5cf6; 
+            --gray-400: #9ca3af;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #e5e5e5;
+            background: #0a0a0a;
+        }
+        .fade-in-up { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .fade-in-up.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+       
+        /* Interactive Border Effect */
+        .interactive-border { position: relative; }
+        .interactive-border::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1px;
+            background: radial-gradient(150px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 80%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: subtract;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .interactive-border:hover::before { opacity: 1; }
+        .interactive-border-sky { --glow-color: rgba(14, 165, 233, 0.5); }
+        .interactive-border-purple { --glow-color: rgba(139, 92, 246, 0.5); }
+
+        /* Interactive Background for the whole section */
+        #filosofia {
+            position: relative;
+            overflow: hidden;
+        }
+        #filosofia::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                800px circle at var(--mouse-x) var(--mouse-y),
+                rgba(139, 92, 246, 0.15),
+                transparent 70%
+            );
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #filosofia:hover::before {
+            opacity: 1;
+        }
+
+        .profile-card {
+            background: rgba(17, 17, 17, 0.7); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+        }
+         .profile-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .photo-container {
+            position: relative;
+        }
+        .profile-photo {
+            border-radius: 50%;
+            transform: scale(1.05);
+            filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.4));
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .profile-card:hover .profile-photo {
+            transform: scale(1.15) translateY(-5px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <main>
+        <div class="bg-black">
+            <!-- Philosophy Section -->
+            <section id="filosofia" class="py-20 container mx-auto px-6 relative">
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <h3 class="text-4xl font-bold tracking-tighter fade-in-up">A Nossa Filosofia: A Parceria por Trás da Inovação</h3>
+                        <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto fade-in-up" style="transition-delay: 150ms;">
+                            Conheça a dupla que une uma profunda especialização técnica com uma gestão estratégica focada no seu sucesso.
+                        </p>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                        <!-- Technical Card -->
+                        <div class="profile-card p-8 rounded-xl fade-in-up interactive-border interactive-border-sky" style="transition-delay: 300ms;">
+                           <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-6">
+                                <div class="photo-container w-32 h-32 flex-shrink-0">
+                                    <img src="https://placehold.co/150x150/1f2937/0ea5e9?text=CB" alt="Foto de Claudio Botelho" class="profile-photo w-full h-full object-cover border-2 border-sky-500/50">
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-3 justify-center sm:justify-start">
+                                        <h4 class="text-2xl font-bold">Claudio Botelho</h4>
+                                        <a href="#" target="_blank" class="text-gray-400 hover:text-sky-400 transition-transform duration-300 hover:scale-110">
+                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                        </a>
+                                    </div>
+                                    <p class="text-sky-400 font-medium">Technical Lead & Cloud Architect</p>
+                                    <p class="mt-2 text-gray-400 text-sm">
+                                        O visionário técnico. Claudio é o arquiteto por trás das soluções, garantindo que cada linha de código e cada componente de infraestrutura sejam seguros, escaláveis e perfeitamente alinhados com as melhores práticas de DevSecOps e SRE.
+                                    </p>
+                                </div>
+                           </div>
+                        </div>
+                        <!-- Strategic Card -->
+                        <div class="profile-card p-8 rounded-xl fade-in-up interactive-border interactive-border-purple" style="transition-delay: 450ms;">
+                            <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-6">
+                                <div class="photo-container w-32 h-32 flex-shrink-0">
+                                     <img src="https://placehold.co/150x150/1f2937/8b5cf6?text=SA" alt="Foto de Sofia Alves" class="profile-photo w-full h-full object-cover border-2 border-purple-500/50">
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-3 justify-center sm:justify-start">
+                                        <h4 class="text-2xl font-bold">Sofia Alves</h4>
+                                         <a href="#" target="_blank" class="text-gray-400 hover:text-purple-400 transition-transform duration-300 hover:scale-110">
+                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                        </a>
+                                    </div>
+                                    <p class="text-purple-400 font-medium">Project Manager & Product Strategist</p>
+                                    <p class="mt-2 text-gray-400 text-sm">
+                                        A estratega de negócio. Sofia é a ponte entre a sua visão e a execução técnica. Ela garante que os projetos são entregues no prazo, dentro do orçamento e, mais importante, que geram o impacto e o valor que o seu negócio precisa para crescer.
+                                    </p>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Interactive Background
+            const philosophySection = document.getElementById('filosofia');
+            if (philosophySection) {
+                philosophySection.addEventListener('mousemove', e => {
+                    const rect = philosophySection.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    philosophySection.style.setProperty('--mouse-x', `${x}px`);
+                    philosophySection.style.setProperty('--mouse-y', `${y}px`);
+                });
+            }
+
+            // 3D Hover Effect
+            const cards = document.querySelectorAll('.profile-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const { width, height } = rect;
+                    const rotateX = (y / height - 0.5) * -15; 
+                    const rotateY = (x / width - 0.5) * 15;
+
+                    card.style.transition = 'transform 0.1s ease-out';
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
