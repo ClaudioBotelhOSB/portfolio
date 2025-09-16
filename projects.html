@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio | Seção de Projetos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sky-500: #0ea5e9; 
+            --purple-500: #8b5cf6; 
+            --green-400: #4ade80;
+            --pink-400: #f472b6;
+            --yellow-400: #facc15;
+            --orange-400: #fb923c;
+            --gray-400: #9ca3af;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #e5e5e5;
+            background: #0a0a0a;
+        }
+        .fade-in-up { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .fade-in-up.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+       
+        /* Interactive Border Effect */
+        .interactive-border { position: relative; }
+        .interactive-border::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1px;
+            background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: subtract;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .interactive-border:hover::before { opacity: 1; }
+        .interactive-border-sky { --glow-color: rgba(14, 165, 233, 0.4); }
+        .interactive-border-purple { --glow-color: rgba(139, 92, 246, 0.4); }
+        .interactive-border-green { --glow-color: rgba(74, 222, 128, 0.4); }
+        .interactive-border-pink { --glow-color: rgba(244, 114, 182, 0.4); }
+        .interactive-border-yellow { --glow-color: rgba(250, 204, 21, 0.4); }
+        
+        /* Card Flip Effect */
+        .project-card {
+            cursor: pointer;
+            min-height: 420px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+            transform-style: preserve-3d;
+        }
+        .project-card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            background: rgba(17, 17, 17, 0.7); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .card-back h5 {
+            margin-bottom: 0.5rem;
+        }
+        .card-back p {
+            font-size: 0.9rem;
+            color: var(--gray-400);
+        }
+        .project-category-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            align-self: flex-start;
+            margin-bottom: 1rem;
+        }
+        .tool-icon-container {
+            position: relative;
+        }
+        .tool-tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(31, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            width: 220px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+        .tool-icon-container:hover .tool-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+        .flip-indicator {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: scale(0.9);
+        }
+        .project-card:hover .flip-indicator {
+            opacity: 0.7;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <main>
+        <div class="bg-black">
+            <!-- Projects Section -->
+            <section id="projetos" class="py-20 container mx-auto px-6 relative">
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <h3 class="text-4xl font-bold tracking-tighter fade-in-up">Do Desafio à Solução</h3>
+                        <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto fade-in-up" style="transition-delay: 150ms;">Explore os nossos casos de sucesso e o impacto mensurável que gerámos.</p>
+                    </div>
+
+                    <div id="projects-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Project cards will be injected here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Project Data
+            const allProjects = [
+                { id: 2, category: 'Cloud', title: 'Migração para Microsserviços K8s', description: 'Orquestração da migração de uma aplicação legada para microsserviços em Kubernetes.', challenge: 'Modernizar um monolito, melhorando a escalabilidade.', solution: 'Migração para microsserviços em Go no GKE, com Kafka para comunicação assíncrona e Cypress para testes de regressão.', result: 'Aumento de 40% na velocidade de deploy e redução de 90% no tempo de inatividade.', tools: [
+                    { name: 'kubernetes', category: 'Cloud & SRE', usage: 'Orquestração de todos os microsserviços em um ambiente GKE escalável.' },
+                    { name: 'go', category: 'Aplicação & Dados', usage: 'Linguagem principal para o desenvolvimento dos novos microsserviços.' },
+                    { name: 'kafka', category: 'Aplicação & Dados', usage: 'Garantia de comunicação assíncrona e resiliência entre os serviços.' },
+                    { name: 'cypress', category: 'Aplicação & Dados', usage: 'Criação de uma suíte de testes de regressão E2E para validar a migração.' }
+                ], borderColor: 'interactive-border-sky' },
+                { id: 0, category: 'AIOps', title: 'Sistema Preditivo com AIOps', description: 'Sistema que usa ML para analisar métricas, prever anomalias e iniciar auto-remediação.', challenge: 'Reduzir o tempo de resolução (MTTR) de incidentes.', solution: 'Serviço em Python que consome métricas do Prometheus, usa Prophet para detetar anomalias e aciona runbooks do Ansible.', result: 'Resolução de 80% dos incidentes comuns sem intervenção humana e redução do MTTR em 60%.', tools: [
+                    { name: 'python', category: 'Aplicação & Dados', usage: 'Linguagem usada para o serviço de análise e machine learning.' },
+                    { name: 'prometheus', category: 'Cloud & SRE', usage: 'Coleta de métricas em tempo real de toda a infraestrutura.' },
+                    { name: 'ansible', category: 'Cloud & SRE', usage: 'Automação da execução de runbooks para auto-remediação.' },
+                    { name: 'datadog', category: 'IA & AIOps', usage: 'Visualização e correlação de dados para a identificação de padrões.' }
+                ], borderColor: 'interactive-border-purple' },
+                { id: 4, category: 'Segurança', title: 'Implementação de Zero Trust', description: 'Segurança de rede granular em Kubernetes usando políticas de rede baseadas em identidade via eBPF.', challenge: 'Atender a requisitos de conformidade PCI-DSS.', solution: 'Substituição do CNI padrão por Cilium para criar políticas de rede de "negação por padrão" baseadas em identidade de serviço.', result: 'Arquitetura Zero Trust implementada, tornando a segurança mais dinâmica e robusta.', tools: [
+                    { name: 'kubernetes', category: 'Cloud & SRE', usage: 'Base da orquestração onde a política de segurança foi aplicada.' },
+                    { name: 'cilium', category: 'DevSecOps', usage: 'CNI que utiliza eBPF para aplicar políticas de rede a nível de identidade.' },
+                    { name: 'ebpf', category: 'Cloud & SRE', usage: 'Tecnologia de base que permitiu a observabilidade e segurança a nível de kernel.' },
+                ], borderColor: 'interactive-border-pink' },
+            ];
+            
+            const projectsContainer = document.getElementById('projects-container');
+            if(projectsContainer){
+                renderProjects();
+            }
+            
+            function renderProjects() {
+                if(!projectsContainer) return;
+                
+                projectsContainer.innerHTML = '';
+                allProjects.forEach((project, index) => {
+                    const toolIcons = project.tools.map(tool => {
+                         let glowColor, glowColorTransparent;
+                        switch (tool.category) {
+                            case 'IA & AIOps': glowColor = 'var(--purple-500)'; glowColorTransparent = 'rgba(139, 92, 246, 0.1)'; break;
+                            case 'DevSecOps': glowColor = 'var(--green-400)'; glowColorTransparent = 'rgba(74, 222, 128, 0.1)'; break;
+                            case 'Cloud & SRE': glowColor = 'var(--orange-400)'; glowColorTransparent = 'rgba(251, 146, 60, 0.1)'; break;
+                            case 'Aplicação & Dados': glowColor = 'var(--yellow-400)'; glowColorTransparent = 'rgba(250, 204, 21, 0.1)'; break;
+                            default: glowColor = 'var(--sky-500)'; glowColorTransparent = 'rgba(14, 165, 233, 0.1)';
+                        }
+                        
+                        const toolTitle = tool.name.charAt(0).toUpperCase() + tool.name.slice(1);
+
+                        return `
+                        <div class="tool-icon-container">
+                            <img src="https://skillicons.dev/icons?i=${tool.name}" alt="${tool.name}" class="w-8 h-8 rounded-full bg-gray-700/50 p-1.5">
+                            <div class="tool-tooltip">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h6 class="font-bold text-white capitalize">${toolTitle}</h6>
+                                    <span class="project-category-tag !m-0 !py-0.5 !px-2 !text-xs" style="color:${glowColor}; background-color:${glowColorTransparent};">${tool.category}</span>
+                                </div>
+                                <p class="text-sm text-left">${tool.usage}</p>
+                            </div>
+                        </div>
+                    `}).join('');
+                    
+                    let glowColor, glowColorTransparent;
+                    switch (project.borderColor) {
+                        case 'interactive-border-purple': glowColor = 'var(--purple-500)'; glowColorTransparent = 'rgba(139, 92, 246, 0.1)'; break;
+                        case 'interactive-border-green': glowColor = 'var(--green-400)'; glowColorTransparent = 'rgba(74, 222, 128, 0.1)'; break;
+                        case 'interactive-border-pink': glowColor = 'var(--pink-400)'; glowColorTransparent = 'rgba(244, 114, 182, 0.1)'; break;
+                        case 'interactive-border-yellow': glowColor = 'var(--yellow-400)'; glowColorTransparent = 'rgba(250, 204, 21, 0.1)'; break;
+                        default: glowColor = 'var(--sky-500)'; glowColorTransparent = 'rgba(14, 165, 233, 0.1)';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = `project-card fade-in-up`;
+                    card.style.transitionDelay = `${index * 150}ms`;
+                    
+                    card.innerHTML = `
+                        <div class="card-inner">
+                            <div class="card-front interactive-border ${project.borderColor}" style="--glow-color: ${glowColor};">
+                                <div class="project-category-tag" style="color:${glowColor}; background-color:${glowColorTransparent};">${project.category}</div>
+                                <h4 class="text-2xl font-bold text-white">${project.title}</h4>
+                                <p class="mt-2 text-gray-400 flex-grow">${project.description}</p>
+                                <div class="mt-4">
+                                    <p class="text-sm font-semibold mb-2 text-gray-300">Tecnologias Utilizadas:</p>
+                                    <div class="flex flex-wrap gap-2">${toolIcons}</div>
+                                </div>
+                                <div class="flip-indicator mt-auto self-end">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5m11 2a9 9 0 11-2.062 6.364M20 20v-5h-5" /></svg>
+                                </div>
+                            </div>
+                            <div class="card-back interactive-border ${project.borderColor}" style="--glow-color: ${glowColor};">
+                                <div class="flex flex-col h-full">
+                                    <div>
+                                        <h5 class="text-lg font-bold" style="color:${glowColor};">Desafio</h5>
+                                        <p>${project.challenge}</p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <h5 class="text-lg font-bold" style="color:${glowColor};">Solução</h5>
+                                        <p>${project.solution}</p>
+                                    </div>
+                                    <div class="mt-4 flex-grow">
+                                        <h5 class="text-lg font-bold" style="color:${glowColor};">Resultado</h5>
+                                        <p>${project.result}</p>
+                                    </div>
+                                    <div class="flip-indicator mt-auto self-end">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5m11 2a9 9 0 11-2.062 6.364M20 20v-5h-5" /></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(card);
+                    observer.observe(card);
+                });
+                
+                addCardEventListeners();
+            }
+
+            function addCardEventListeners() {
+                const cards = document.querySelectorAll('.project-card');
+                cards.forEach(card => {
+                    const cardInner = card.querySelector('.card-inner');
+                    
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.tool-icon-container')) return; // Prevent flip when hovering icon
+                        card.classList.toggle('is-flipped');
+                    });
+
+                    card.querySelectorAll('.interactive-border').forEach(border => {
+                        border.addEventListener('mousemove', e => {
+                            const rect = border.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            border.style.setProperty('--mouse-x', `${x}px`);
+                            border.style.setProperty('--mouse-y', `${y}px`);
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
