@@ -158,9 +158,19 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
         }
-        .proficiency-filter:hover .tool-tooltip {
+        .proficiency-filter:hover .tool-tooltip,
+        .tool-icon-wrapper:hover .tool-tooltip {
             opacity: 1;
             transform: translateX(-50%) scale(1);
+        }
+        .project-category-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
@@ -235,20 +245,20 @@
             document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
             const tools = [
-                { name: 'Kubernetes', category: 'cloud', proficiency: 3, related: ['docker', 'prometheus', 'argo cd', 'cilium'], icon: 'https://cdn.simpleicons.org/kubernetes/326CE5' },
-                { name: 'AWS', category: 'cloud', proficiency: 3, related: ['terraform', 'kubernetes', 'lambda'], icon: 'https://cdn.simpleicons.org/amazonaws/232F3E' },
-                { name: 'GitHub Actions', category: 'devops', proficiency: 3, related: ['docker', 'snyk', 'terraform'], icon: 'https://cdn.simpleicons.org/githubactions/2088FF' },
-                { name: 'Terraform', category: 'cloud', proficiency: 3, related: ['aws', 'gcp', 'azure', 'vault'], icon: 'https://cdn.simpleicons.org/terraform/7B42BC' },
-                { name: 'Python', category: 'app_data', proficiency: 3, related: ['pandas', 'scikit-learn', 'fastapi'], icon: 'https://cdn.simpleicons.org/python/3776AB' },
-                { name: 'Datadog', category: 'ai', proficiency: 3, related: ['aws', 'kubernetes', 'prometheus'], icon: 'https://cdn.simpleicons.org/datadog/632ca6' },
-                { name: 'Argo CD', category: 'devops', proficiency: 3, related: ['kubernetes', 'helm', 'kustomize'], icon: 'https://cdn.simpleicons.org/argo/EF7B4D' },
-                { name: 'Zero Trust', category: 'strategy', proficiency: 3, related: ['cilium', 'istio', 'vault', 'keycloak'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>' },
-                { name: 'Vertex AI', category: 'ai', proficiency: 2, related: ['gcp', 'kubeflow', 'tensorflow'], icon: 'https://cdn.simpleicons.org/googlecloud/4285F4' },
-                { name: 'Snyk', category: 'devops', proficiency: 2, related: ['github actions', 'docker', 'python'], icon: 'https://cdn.simpleicons.org/snyk/4C4A73' },
-                { name: 'Cypress', category: 'app_data', proficiency: 2, related: ['javascript', 'github actions'], icon: 'https://cdn.simpleicons.org/cypress/17202C' },
-                { name: 'DDD', category: 'strategy', proficiency: 2, related: ['microservices', 'event-driven'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a3.002 3.002 0 013.292-2.143 3.002 3.002 0 013.292 2.143m-6.584 0a3.002 3.002 0 003.292-2.143 3.002 3.002 0 003.292 2.143m0 0l-1 1m-5.584-7.857l1-1m0 0l1 1m-1-1v-2m0 2l-1 1m0-1l-1-1m0 0l-1 1m1-1v-2m-2-4v2m2-2l-1 1m0-1l1-1m0 0l1 1m-1-1v-2m0 2l1 1m0-1l1-1m0 0l1 1m-1-1v-2"></path></svg>' },
-                { name: 'FinOps', category: 'strategy', proficiency: 1, related: ['aws', 'gcp', 'azure', 'opencost'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-1m0-6h.01M6 12H5m14 0h-1m-1-5.414l.707-.707m-12.02 12.02l-.707-.707m12.02 0l.707.707M6.707 6.707L6 6"></path></svg>' },
-                { name: 'BigQuery', category: 'app_data', proficiency: 1, related: ['gcp', 'dbt', 'tableau'], icon: 'https://cdn.simpleicons.org/googlebigquery/4285F4' },
+                { name: 'Kubernetes', category_short: 'cloud', category_full: 'Cloud & SRE', proficiency: 3, related: ['docker', 'prometheus', 'argo cd', 'cilium'], icon: 'https://cdn.simpleicons.org/kubernetes/326CE5', description: 'Orquestração de contêineres para automação, escalabilidade e gestão de aplicações.' },
+                { name: 'AWS', category_short: 'cloud', category_full: 'Cloud & SRE', proficiency: 3, related: ['terraform', 'kubernetes', 'lambda'], icon: 'https://cdn.simpleicons.org/amazonaws/232F3E', description: 'Plataforma de nuvem líder para serviços de computação, armazenamento e bases de dados.' },
+                { name: 'GitHub Actions', category_short: 'devops', category_full: 'DevSecOps', proficiency: 3, related: ['docker', 'snyk', 'terraform'], icon: 'https://cdn.simpleicons.org/githubactions/2088FF', description: 'Automação de workflows de CI/CD diretamente no seu repositório GitHub.' },
+                { name: 'Terraform', category_short: 'cloud', category_full: 'Cloud & SRE', proficiency: 3, related: ['aws', 'gcp', 'azure', 'vault'], icon: 'https://cdn.simpleicons.org/terraform/7B42BC', description: 'Infraestrutura como Código para provisionar e gerir recursos de nuvem de forma segura e eficiente.' },
+                { name: 'Python', category_short: 'app_data', category_full: 'Aplicação & Dados', proficiency: 3, related: ['pandas', 'scikit-learn', 'fastapi'], icon: 'https://cdn.simpleicons.org/python/3776AB', description: 'Linguagem versátil para backend, scripting, automação e análise de dados.' },
+                { name: 'Datadog', category_short: 'ai', category_full: 'IA & AIOps', proficiency: 3, related: ['aws', 'kubernetes', 'prometheus'], icon: 'https://cdn.simpleicons.org/datadog/632ca6', description: 'Plataforma de observabilidade para monitoramento de infraestrutura, APM e gestão de logs.' },
+                { name: 'Argo CD', category_short: 'devops', category_full: 'DevSecOps', proficiency: 3, related: ['kubernetes', 'helm', 'kustomize'], icon: 'https://cdn.simpleicons.org/argo/EF7B4D', description: 'Ferramenta de GitOps para Kubernetes que permite a entrega contínua declarativa.' },
+                { name: 'Zero Trust', category_short: 'strategy', category_full: 'Arquitetura & Estratégia', proficiency: 3, related: ['cilium', 'istio', 'vault', 'keycloak'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>', description: 'Modelo de segurança que assume que nenhuma entidade, interna ou externa, é confiável por padrão.' },
+                { name: 'Vertex AI', category_short: 'ai', category_full: 'IA & AIOps', proficiency: 2, related: ['gcp', 'kubeflow', 'tensorflow'], icon: 'https://cdn.simpleicons.org/googlecloud/4285F4', description: 'Plataforma unificada de ML do Google Cloud para construir, treinar e implementar modelos.' },
+                { name: 'Snyk', category_short: 'devops', category_full: 'DevSecOps', proficiency: 2, related: ['github actions', 'docker', 'python'], icon: 'https://cdn.simpleicons.org/snyk/4C4A73', description: 'Ferramenta de segurança que encontra e corrige vulnerabilidades em código, dependências e contêineres.' },
+                { name: 'Cypress', category_short: 'app_data', category_full: 'Aplicação & Dados', proficiency: 2, related: ['javascript', 'github actions'], icon: 'https://cdn.simpleicons.org/cypress/17202C', description: 'Framework de testes E2E de nova geração para aplicações web modernas.' },
+                { name: 'DDD', category_short: 'strategy', category_full: 'Arquitetura & Estratégia', proficiency: 2, related: ['microservices', 'event-driven'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a3.002 3.002 0 013.292-2.143 3.002 3.002 0 013.292 2.143m-6.584 0a3.002 3.002 0 003.292-2.143 3.002 3.002 0 003.292 2.143m0 0l-1 1m-5.584-7.857l1-1m0 0l1 1m-1-1v-2m0 2l-1 1m0-1l-1-1m0 0l-1 1m1-1v-2m-2-4v2m2-2l-1 1m0-1l1-1m0 0l1 1m-1-1v-2m0 2l1 1m0-1l1-1m0 0l1 1m-1-1v-2"></path></svg>', description: 'Abordagem de design de software que alinha o código às necessidades do negócio.' },
+                { name: 'FinOps', category_short: 'strategy', category_full: 'Arquitetura & Estratégia', proficiency: 1, related: ['aws', 'gcp', 'azure', 'opencost'], icon: '<svg class="tool-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-1m0-6h.01M6 12H5m14 0h-1m-1-5.414l.707-.707m-12.02 12.02l-.707-.707m12.02 0l.707.707M6.707 6.707L6 6"></path></svg>', description: 'Prática de gestão financeira na nuvem para otimizar os custos e maximizar o valor.' },
+                { name: 'BigQuery', category_short: 'app_data', category_full: 'Aplicação & Dados', proficiency: 1, related: ['gcp', 'dbt', 'tableau'], icon: 'https://cdn.simpleicons.org/googlebigquery/4285F4', description: 'Data warehouse serverless e escalável do Google Cloud para análise de grandes volumes de dados.' },
             ];
 
             const filterContainer = document.getElementById('filter-container');
@@ -260,20 +270,13 @@
                 toolsGrid.innerHTML = '';
                 tools.forEach(tool => {
                     const card = document.createElement('div');
-                    card.className = `tool-card tool-card-${tool.category} rounded-xl flex flex-col items-center justify-center text-center fade-in-up interactive-border`;
-                    card.setAttribute('data-category', tool.category);
+                    card.className = `tool-card tool-card-${tool.category_short} rounded-xl flex flex-col items-center justify-center text-center fade-in-up interactive-border`;
+                    card.setAttribute('data-category', tool.category_short);
                     card.setAttribute('data-name', tool.name.toLowerCase());
                     card.setAttribute('data-related', tool.related ? tool.related.join(',') : '');
                     card.setAttribute('data-proficiency', tool.proficiency);
 
-                    let borderColorClass = '';
-                    switch (tool.category) {
-                        case 'ai': borderColorClass = 'interactive-border-purple'; break;
-                        case 'devops': borderColorClass = 'interactive-border-green'; break;
-                        case 'cloud': borderColorClass = 'interactive-border-orange'; break;
-                        case 'app_data': borderColorClass = 'interactive-border-yellow'; break;
-                        case 'strategy': borderColorClass = 'interactive-border-cyan'; break;
-                    }
+                    let borderColorClass = getBorderColorClass(tool.category_short);
                     card.classList.add(borderColorClass);
 
                     const iconHtml = tool.icon.startsWith('<svg') 
@@ -282,13 +285,24 @@
 
                     let proficiencyDots = '<div class="proficiency-dots">';
                     for (let i = 0; i < 3; i++) {
-                        proficiencyDots += `<div class="dot ${i < tool.proficiency ? 'filled' : ''}" style="--glow-color: ${getGlowColor(tool.category)}"></div>`;
+                        proficiencyDots += `<div class="dot ${i < tool.proficiency ? 'filled' : ''}" style="--glow-color: ${getGlowColor(tool.category_short)}"></div>`;
                     }
                     proficiencyDots += '</div>';
+                    
+                    const toolTitle = tool.name;
+                    const categoryTagColor = getGlowColor(tool.category_short);
+                    const categoryTagBg = categoryTagColor.replace(')', ', 0.1)').replace('rgb', 'rgba');
 
                     card.innerHTML = `
                         <div class="tool-icon-wrapper">
                             ${iconHtml}
+                            <div class="tool-tooltip">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h6 class="font-bold text-white capitalize">${toolTitle}</h6>
+                                    <span class="project-category-tag !m-0 !py-0.5 !px-2 !text-xs" style="color:${categoryTagColor}; background-color:${categoryTagBg};">${tool.category_full}</span>
+                                </div>
+                                <p class="text-sm text-left">${tool.description}</p>
+                            </div>
                         </div>
                         <h4 class="font-bold">${tool.name}</h4>
                         ${proficiencyDots}
@@ -332,8 +346,8 @@
                 }
             });
 
-            function getGlowColor(category) {
-                switch (category) {
+            function getGlowColor(category_short) {
+                switch (category_short) {
                     case 'ai': return 'var(--purple-500)';
                     case 'devops': return 'var(--green-400)';
                     case 'cloud': return 'var(--orange-400)';
@@ -342,11 +356,20 @@
                     default: return 'var(--sky-500)';
                 }
             }
+
+             function getBorderColorClass(category_short) {
+                switch (category_short) {
+                    case 'ai': return 'interactive-border-purple';
+                    case 'devops': return 'interactive-border-green';
+                    case 'cloud': return 'interactive-border-orange';
+                    case 'app_data': return 'interactive-border-yellow';
+                    case 'strategy': return 'interactive-border-cyan';
+                    default: return 'interactive-border-sky';
+                }
+            }
             
             function addInteractiveEffects() {
                  document.querySelectorAll('.tool-card').forEach(card => {
-                    const iconWrapper = card.querySelector('.tool-icon-wrapper');
-
                     card.addEventListener('mousemove', e => {
                         const rect = card.getBoundingClientRect();
                         const x = e.clientX - rect.left;
@@ -358,17 +381,17 @@
                         const rotateX = (y / height - 0.5) * -15; 
                         const rotateY = (x / width - 0.5) * 15;
                         
-                        card.style.transition = 'transform 0.1s ease-out';
                         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                         
+                        const iconWrapper = card.querySelector('.tool-icon-wrapper');
                         if (iconWrapper) {
                              iconWrapper.style.transform = `translate(-50%, -50%) translateZ(40px) rotateX(${rotateX*0.5}deg) rotateY(${rotateY*0.5}deg)`;
                         }
                     });
 
                     card.addEventListener('mouseleave', () => {
-                        card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                         card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                        const iconWrapper = card.querySelector('.tool-icon-wrapper');
                         if (iconWrapper) {
                             iconWrapper.style.transform = 'translate(-50%, -50%) translateZ(0px)';
                         }
