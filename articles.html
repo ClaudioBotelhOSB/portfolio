@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio | Seção de Artigos & Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sky-500: #0ea5e9; 
+            --purple-500: #8b5cf6; 
+            --pink-400: #f472b6;
+            --gray-400: #9ca3af;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #e5e5e5;
+            background: #0a0a0a;
+        }
+        .fade-in-up { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .fade-in-up.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+       
+        /* Interactive Border Effect */
+        .interactive-border { position: relative; }
+        .interactive-border::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1px;
+            background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: subtract;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .interactive-border:hover::before { opacity: 1; }
+        .interactive-border-sky { --glow-color: rgba(14, 165, 233, 0.4); }
+        .interactive-border-purple { --glow-color: rgba(139, 92, 246, 0.4); }
+        .interactive-border-pink { --glow-color: rgba(244, 114, 182, 0.4); }
+        
+        /* Card Styles */
+        .insight-card {
+            background: rgba(17, 17, 17, 0.7); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            height: 100%;
+        }
+        .insight-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Interactive Background for the whole section */
+        #artigos {
+            position: relative;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+        #artigos-bg {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0),
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
+            background-size: 40px 40px;
+            background-position: var(--bg-x, 0px) var(--bg-y, 0px);
+            transition: background-position 0.2s ease-out;
+            z-index: 0;
+        }
+
+        /* Modal Styles */
+        .modal-container { 
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            transition: opacity 0.3s ease; 
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-container.visible { opacity: 1; pointer-events: auto; }
+        .modal-content { 
+            background: rgba(17, 17, 17, 0.7); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+            transform: translateY(20px) scale(0.95);
+        }
+        .modal-container.visible .modal-content { transform: translateY(0) scale(1); }
+
+    </style>
+</head>
+<body class="antialiased">
+    <main>
+        <div class="bg-black">
+            <!-- Articles & Insights Section -->
+            <section id="artigos" class="py-20 container mx-auto px-6 relative">
+                <div id="artigos-bg"></div>
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <h3 class="text-4xl font-bold tracking-tighter fade-in-up">Artigos & Insights</h3>
+                        <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto fade-in-up" style="transition-delay: 150ms;">Análises e reflexões sobre os desafios e as oportunidades na intersecção da tecnologia e do negócio.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Insight Card 1 -->
+                        <div class="insight-card-container fade-in-up" style="transition-delay: 300ms;">
+                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-purple flex flex-col">
+                                <h4 class="text-2xl font-bold text-purple-400">"AIOps não é sobre substituir humanos, é sobre ampliar a sua capacidade de foco."</h4>
+                                <p class="mt-4 text-sm text-gray-400 flex-grow">Uma análise sobre como a IA está a transformar a observabilidade de reativa para preditiva.</p>
+                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-gray-300">AIOps na Prática</span>
+                                    <a href="#" class="article-details-link text-purple-400 font-semibold text-sm" data-article-id="0">Ler a análise →</a>
+                                </div>
+                           </div>
+                        </div>
+                        
+                        <!-- Insight Card 2 -->
+                        <div class="insight-card-container fade-in-up" style="transition-delay: 450ms;">
+                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-pink flex flex-col">
+                                <h4 class="text-2xl font-bold text-pink-400">"Zero Trust não é um produto, é uma estratégia que começa na identidade, não no perímetro."</h4>
+                                <p class="mt-4 text-sm text-gray-400 flex-grow">Uma visão técnica sobre como a segurança de rede moderna pode ser alcançada com eBPF.</p>
+                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-gray-300">Implementando Zero Trust</span>
+                                    <a href="#" class="article-details-link text-pink-400 font-semibold text-sm" data-article-id="1">Ler a análise →</a>
+                                </div>
+                           </div>
+                        </div>
+
+                        <!-- Insight Card 3 -->
+                        <div class="insight-card-container fade-in-up" style="transition-delay: 600ms;">
+                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-sky flex flex-col">
+                                <h4 class="text-2xl font-bold text-sky-400">"A melhor métrica de um bom Platform Engineering é a autonomia, não a velocidade."</h4>
+                                <p class="mt-4 text-sm text-gray-400 flex-grow">Como portais de self-service como o Backstage estão a redefinir a produtividade dos programadores.</p>
+                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                                    <span class="font-semibold text-sm text-gray-300">O Futuro do DevOps</span>
+                                    <a href="#" class="article-details-link text-sky-400 font-semibold text-sm" data-article-id="2">Ler a análise →</a>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+     <!-- Article Details Modal -->
+    <div id="article-modal" class="modal-container">
+        <div class="modal-content rounded-xl max-w-3xl w-full relative">
+            <div class="p-8 max-h-[85vh] overflow-y-auto">
+                <h3 id="article-modal-title" class="text-3xl font-bold mb-4"></h3>
+                <p id="article-modal-category" class="font-semibold uppercase tracking-wider text-sm mb-6"></p>
+                <div id="article-modal-content" class="text-gray-300 space-y-4 prose prose-invert prose-lg"></div>
+            </div>
+            <button id="close-article-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Interactive Background
+            const articlesSection = document.getElementById('artigos');
+            if (articlesSection) {
+                 const articlesBg = document.getElementById('artigos-bg');
+                articlesSection.addEventListener('mousemove', e => {
+                    const rect = articlesSection.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const bgX = -x / 20;
+                    const bgY = -y / 20;
+                    if(articlesBg) articlesBg.style.setProperty('--bg-x', `${bgX}px`);
+                    if(articlesBg) articlesBg.style.setProperty('--bg-y', `${bgY}px`);
+
+                    articlesSection.style.setProperty('--mouse-x', `${x}px`);
+                    articlesSection.style.setProperty('--mouse-y', `${y}px`);
+                });
+            }
+
+            // 3D Hover Effect
+            const cards = document.querySelectorAll('.insight-card-container');
+            cards.forEach(cardContainer => {
+                const card = cardContainer.querySelector('.insight-card');
+                cardContainer.addEventListener('mousemove', (e) => {
+                    const rect = cardContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const { width, height } = rect;
+                    const rotateX = (y / height - 0.5) * -20; 
+                    const rotateY = (x / width - 0.5) * 20;
+
+                    if(card) {
+                        card.style.transition = 'transform 0.1s ease-out';
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    }
+                });
+
+                cardContainer.addEventListener('mouseleave', () => {
+                    if(card) {
+                        card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                    }
+                });
+            });
+
+            // Article Modal Logic
+            const articlesData = [
+                { id: 0, title: 'AIOps na Prática', category: 'AIOps', color: 'text-purple-400', content: `<p>A observabilidade tradicional é reativa. Esperamos que um alerta dispare para começar a investigar. O AIOps inverte esta lógica.</p><p>Ao aplicar modelos de Machine Learning sobre métricas de séries temporais (como as do Prometheus), podemos identificar desvios subtis no comportamento normal de um sistema *antes* que eles se tornem incidentes críticos. Isto significa menos tempo em "salas de guerra" e mais tempo a inovar.</p><p>A verdadeira força do AIOps não é substituir engenheiros, mas sim filtrar o ruído, correlacionar eventos de múltiplas fontes (logs, métricas, traces) e apresentar uma causa provável, permitindo que a equipa de SRE se foque na solução estratégica em vez de perder horas a diagnosticar.</p>` },
+                { id: 1, title: 'Implementando Zero Trust', category: 'Segurança', color: 'text-pink-400', content: `<p>O modelo de segurança baseado em perímetro (firewalls, VPNs) está obsoleto na era da nuvem. O Zero Trust parte do princípio de que nenhuma requisição, interna ou externa, é confiável por padrão.</p><p>Com ferramentas como o Cilium, que utiliza o poder do eBPF no kernel do Linux, podemos aplicar políticas de segurança baseadas na identidade criptográfica de um serviço, e não no seu endereço IP, que é efémero em ambientes de contêineres. Isto permite-nos criar regras granulares como "O serviço de pagamentos só pode comunicar com a base de dados de transações", independentemente de onde esses serviços estejam a correr.</p><p>O resultado é uma superfície de ataque drasticamente reduzida e uma segurança que se adapta dinamicamente à sua arquitetura.</p>` },
+                { id: 2, title: 'O Futuro do DevOps', category: 'Platform Engineering', color: 'text-sky-400', content: `<p>A promessa do DevOps era quebrar os silos entre desenvolvimento e operações. No entanto, em muitas empresas, isto resultou em programadores sobrecarregados com a complexidade da infraestrutura (Kubernetes, Terraform, etc.).</p><p>O Platform Engineering resolve este problema. O objetivo é criar uma "plataforma interna" que abstrai a complexidade da infraestrutura e oferece aos programadores uma experiência de self-service. Com ferramentas como o Backstage, podemos criar um portal centralizado onde um programador pode, com poucos cliques, criar um novo microsserviço com todo o pipeline de CI/CD, segurança e observabilidade já configurados.</p><p>A métrica de sucesso deixa de ser a "velocidade de deploy" e passa a ser a "autonomia e produtividade do programador", o que gera um impacto muito maior no negócio.</p>` },
+            ];
+
+            const articleModal = document.getElementById('article-modal');
+            const closeArticleModalBtn = document.getElementById('close-article-modal');
+
+            function openArticleModal(articleId) {
+                const article = articlesData.find(a => a.id === articleId);
+                if (!article) return;
+                
+                const articleModalTitle = document.getElementById('article-modal-title');
+                const articleModalCategory = document.getElementById('article-modal-category');
+                const articleModalContent = document.getElementById('article-modal-content');
+
+                if (articleModalTitle) articleModalTitle.textContent = article.title;
+                if (articleModalTitle) articleModalTitle.className = `text-3xl font-bold mb-4 ${article.color}`;
+                if (articleModalCategory) articleModalCategory.textContent = article.category;
+                if (articleModalCategory) articleModalCategory.className = `font-semibold uppercase tracking-wider text-sm mb-6 ${article.color}`;
+                if (articleModalContent) articleModalContent.innerHTML = article.content;
+                if (articleModal) articleModal.classList.add('visible');
+            }
+
+            function closeArticleModal() {
+                if (articleModal) articleModal.classList.remove('visible');
+            }
+            
+            document.body.addEventListener('click', (e) => {
+                const link = e.target.closest('.article-details-link');
+                if (link) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const articleId = parseInt(link.dataset.articleId, 10);
+                    openArticleModal(articleId);
+                }
+            });
+
+            if (closeArticleModalBtn) {
+                closeArticleModalBtn.addEventListener('click', closeArticleModal);
+            }
+            if (articleModal) {
+                articleModal.addEventListener('click', (e) => {
+                    if (e.target === articleModal) {
+                        closeArticleModal();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
