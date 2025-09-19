@@ -6,11 +6,16 @@
     <title>Portfólio | Seção de Artigos & Insights</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <style>
         :root { 
             --sky-500: #0ea5e9; 
             --purple-500: #8b5cf6; 
             --pink-400: #f472b6;
+            --green-400: #4ade80;
+            --yellow-400: #facc15;
+            --orange-400: #fb923c;
             --gray-400: #9ca3af;
         }
         body {
@@ -43,6 +48,9 @@
         .interactive-border-sky { --glow-color: rgba(14, 165, 233, 0.4); }
         .interactive-border-purple { --glow-color: rgba(139, 92, 246, 0.4); }
         .interactive-border-pink { --glow-color: rgba(244, 114, 182, 0.4); }
+        .interactive-border-green { --glow-color: rgba(74, 222, 128, 0.4); }
+        .interactive-border-yellow { --glow-color: rgba(250, 204, 21, 0.4); }
+        .interactive-border-orange { --glow-color: rgba(251, 146, 60, 0.4); }
         
         /* Card Styles */
         .insight-card {
@@ -53,9 +61,14 @@
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
             transform-style: preserve-3d;
             height: 100%;
+            cursor: pointer;
         }
         .insight-card:hover {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .insight-card-container.hide-original {
+            opacity: 0 !important;
+            pointer-events: none;
         }
 
         /* Interactive Background for the whole section */
@@ -77,30 +90,67 @@
             z-index: 0;
         }
 
-        /* Modal Styles */
-        .modal-container { 
+        /* Full Screen Article Viewer */
+        #article-viewer-overlay {
             position: fixed;
             inset: 0;
             background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #article-viewer-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .article-viewer-card {
+            position: fixed;
             z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            transition: opacity 0.3s ease; 
             opacity: 0;
             pointer-events: none;
         }
-        .modal-container.visible { opacity: 1; pointer-events: auto; }
-        .modal-content { 
-            background: rgba(17, 17, 17, 0.7); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-            transform: translateY(20px) scale(0.95);
+        .article-viewer-content {
+            opacity: 0;
+            transition: opacity 0.3s ease 0.3s;
         }
-        .modal-container.visible .modal-content { transform: translateY(0) scale(1); }
+        .article-viewer-card.visible .article-viewer-content {
+            opacity: 1;
+        }
+
+        /* Swiper Styles */
+        .articles-swiper {
+            padding-bottom: 4rem !important;
+        }
+        .swiper-slide {
+            height: auto;
+            display: flex;
+        }
+        .swiper-button-next, .swiper-button-prev {
+            color: var(--gray-400);
+            background: rgba(31, 41, 59, 0.5);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+        }
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+            background: rgba(14, 165, 233, 0.5);
+            color: white;
+        }
+        .swiper-button-next::after, .swiper-button-prev::after {
+            font-size: 18px;
+        }
+        .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+        }
+        .swiper-pagination-bullet-active {
+            background: var(--sky-500);
+        }
 
     </style>
 </head>
@@ -115,80 +165,90 @@
                         <h3 class="text-4xl font-bold tracking-tighter fade-in-up">Artigos & Insights</h3>
                         <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto fade-in-up" style="transition-delay: 150ms;">Análises e reflexões sobre os desafios e as oportunidades na intersecção da tecnologia e do negócio.</p>
                     </div>
-
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Insight Card 1 -->
-                        <div class="insight-card-container fade-in-up" style="transition-delay: 300ms;">
-                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-purple flex flex-col">
-                                <h4 class="text-2xl font-bold text-purple-400">"AIOps não é sobre substituir humanos, é sobre ampliar a sua capacidade de foco."</h4>
-                                <p class="mt-4 text-sm text-gray-400 flex-grow">Uma análise sobre como a IA está a transformar a observabilidade de reativa para preditiva.</p>
-                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-gray-300">AIOps na Prática</span>
-                                    <a href="#" class="article-details-link text-purple-400 font-semibold text-sm" data-article-id="0">Ler a análise →</a>
-                                </div>
-                           </div>
+                    <div class="swiper-container articles-swiper">
+                        <div id="articles-grid" class="swiper-wrapper">
+                            <!-- Article cards will be injected here by JavaScript -->
                         </div>
-                        
-                        <!-- Insight Card 2 -->
-                        <div class="insight-card-container fade-in-up" style="transition-delay: 450ms;">
-                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-pink flex flex-col">
-                                <h4 class="text-2xl font-bold text-pink-400">"Zero Trust não é um produto, é uma estratégia que começa na identidade, não no perímetro."</h4>
-                                <p class="mt-4 text-sm text-gray-400 flex-grow">Uma visão técnica sobre como a segurança de rede moderna pode ser alcançada com eBPF.</p>
-                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-gray-300">Implementando Zero Trust</span>
-                                    <a href="#" class="article-details-link text-pink-400 font-semibold text-sm" data-article-id="1">Ler a análise →</a>
-                                </div>
-                           </div>
-                        </div>
-
-                        <!-- Insight Card 3 -->
-                        <div class="insight-card-container fade-in-up" style="transition-delay: 600ms;">
-                           <div class="insight-card p-8 rounded-xl interactive-border interactive-border-sky flex flex-col">
-                                <h4 class="text-2xl font-bold text-sky-400">"A melhor métrica de um bom Platform Engineering é a autonomia, não a velocidade."</h4>
-                                <p class="mt-4 text-sm text-gray-400 flex-grow">Como portais de self-service como o Backstage estão a redefinir a produtividade dos programadores.</p>
-                                <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-gray-300">O Futuro do DevOps</span>
-                                    <a href="#" class="article-details-link text-sky-400 font-semibold text-sm" data-article-id="2">Ler a análise →</a>
-                                </div>
-                           </div>
-                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                        <!-- Add Navigation -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
                     </div>
                 </div>
             </section>
         </div>
     </main>
 
-     <!-- Article Details Modal -->
-    <div id="article-modal" class="modal-container">
-        <div class="modal-content rounded-xl max-w-3xl w-full relative">
-            <div class="p-8 max-h-[85vh] overflow-y-auto">
+    <div id="article-viewer-overlay"></div>
+    <div id="article-viewer-card" class="article-viewer-card">
+        <div class="p-8 max-h-[90vh] overflow-y-auto">
+            <div class="article-viewer-content">
                 <h3 id="article-modal-title" class="text-3xl font-bold mb-4"></h3>
                 <p id="article-modal-category" class="font-semibold uppercase tracking-wider text-sm mb-6"></p>
-                <div id="article-modal-content" class="text-gray-300 space-y-4 prose prose-invert prose-lg"></div>
+                <div id="article-modal-content" class="text-gray-300 space-y-4 prose prose-invert prose-lg max-w-none"></div>
             </div>
             <button id="close-article-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
         </div>
     </div>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll Animations
+            // Data for articles
+            const articlesData = [
+                { id: 0, title: 'AIOps na Prática', category: 'AIOps', insight: '"AIOps não é sobre substituir humanos, é sobre ampliar a sua capacidade de foco."', description: 'Uma análise sobre como a IA está a transformar a observabilidade de reativa para preditiva.', colorClass: 'purple', content: `<p>A observabilidade tradicional é reativa. Esperamos que um alerta dispare para começar a investigar. O AIOps inverte esta lógica.</p><p>Ao aplicar modelos de Machine Learning sobre métricas de séries temporais (como as do Prometheus), podemos identificar desvios subtis no comportamento normal de um sistema *antes* que eles se tornem incidentes críticos. Isto significa menos tempo em "salas de guerra" e mais tempo a inovar.</p><p>A verdadeira força do AIOps não é substituir engenheiros, mas sim filtrar o ruído, correlacionar eventos de múltiplas fontes (logs, métricas, traces) e apresentar uma causa provável, permitindo que a equipa de SRE se foque na solução estratégica em vez de perder horas a diagnosticar.</p>` },
+                { id: 1, title: 'Implementando Zero Trust', category: 'Segurança', insight: '"Zero Trust não é um produto, é uma estratégia que começa na identidade, não no perímetro."', description: 'Uma visão técnica sobre como a segurança de rede moderna pode ser alcançada com eBPF.', colorClass: 'pink', content: `<p>O modelo de segurança baseado em perímetro (firewalls, VPNs) está obsoleto na era da nuvem. O Zero Trust parte do princípio de que nenhuma requisição, interna ou externa, é confiável por padrão.</p><p>Com ferramentas como o Cilium, que utiliza o poder do eBPF no kernel do Linux, podemos aplicar políticas de segurança baseadas na identidade criptográfica de um serviço, e não no seu endereço IP, que é efémero em ambientes de contêineres. Isto permite-nos criar regras granulares como "O serviço de pagamentos só pode comunicar com a base de dados de transações", independentemente de onde esses serviços estejam a correr.</p><p>O resultado é uma superfície de ataque drasticamente reduzida e uma segurança que se adapta dinamicamente à sua arquitetura.</p>` },
+                { id: 2, title: 'O Futuro do DevOps', category: 'Platform Engineering', insight: '"A melhor métrica de um bom Platform Engineering é a autonomia, não a velocidade."', description: 'Como portais de self-service como o Backstage estão a redefinir a produtividade dos programadores.', colorClass: 'sky', content: `<p>A promessa do DevOps era quebrar os silos entre desenvolvimento e operações. No entanto, em muitas empresas, isto resultou em programadores sobrecarregados com a complexidade da infraestrutura (Kubernetes, Terraform, etc.).</p><p>O Platform Engineering resolve este problema. O objetivo é criar uma "plataforma interna" que abstrai a complexidade da infraestrutura e oferece aos programadores uma experiência de self-service. Com ferramentas como o Backstage, podemos criar um portal centralizado onde um programador pode, com poucos cliques, criar um novo microsserviço com todo o pipeline de CI/CD, segurança e observabilidade já configurados.</p><p>A métrica de sucesso deixa de ser a "velocidade de deploy" e passa a ser a "autonomia e produtividade do programador", o que gera um impacto muito maior no negócio.</p>` },
+                { id: 3, title: 'Gerindo Custos na Nuvem', category: 'FinOps', insight: '"FinOps é a prática de trazer responsabilidade financeira para os custos variáveis da nuvem."', description: 'Uma abordagem sobre como otimizar custos sem sacrificar a performance.', colorClass: 'green', content: `<p>Conteúdo do artigo sobre FinOps...</p>`},
+                { id: 4, title: 'Engenharia de Dados Moderna', category: 'Data Engineering', insight: '"O valor não está nos dados, mas na velocidade e fiabilidade com que os transformamos em insights."', description: 'Como plataformas de streaming como o Kafka são a base dos negócios em tempo real.', colorClass: 'yellow', content: `<p>Conteúdo do artigo sobre Engenharia de Dados...</p>`},
+                { id: 5, title: 'O Paradoxo da Resiliência', category: 'SRE', insight: '"Um sistema verdadeiramente resiliente não é aquele que nunca falha, mas aquele que se recupera de forma tão rápida que o utilizador não percebe."', description: 'Uma reflexão sobre como a Engenharia de Caos nos ajuda a construir sistemas mais robustos.', colorClass: 'orange', content: `<p>Conteúdo do artigo sobre SRE e Engenharia de Caos...</p>`},
+            ];
+
+            const articlesGrid = document.getElementById('articles-grid');
+            
+            function renderArticles() {
+                if (!articlesGrid) return;
+                articlesGrid.innerHTML = '';
+                articlesData.forEach((article, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'swiper-slide';
+                    
+                    const cardContainer = document.createElement('div');
+                    cardContainer.className = 'insight-card-container fade-in-up w-full';
+                    cardContainer.style.transitionDelay = `${300 + index * 100}ms`;
+                    cardContainer.dataset.articleId = article.id;
+
+                    cardContainer.innerHTML = `
+                        <div class="insight-card p-8 rounded-xl interactive-border interactive-border-${article.colorClass} flex flex-col">
+                            <h4 class="text-2xl font-bold text-${article.colorClass}-400">${article.insight}</h4>
+                            <p class="mt-4 text-sm text-gray-400 flex-grow">${article.description}</p>
+                            <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                                <span class="font-semibold text-sm text-gray-300">${article.title}</span>
+                                <div class="text-${article.colorClass}-400 font-semibold text-sm flex items-center gap-1">
+                                    <span>Ver insight</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                 </div>
+                            </div>
+                        </div>
+                    `;
+                    slide.appendChild(cardContainer);
+                    articlesGrid.appendChild(slide);
+                });
+            }
+
+            renderArticles();
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => { 
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
                 });
             }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-            document.querySelectorAll('.fade-in-up').forEach(el => {
-                observer.observe(el);
-            });
-
-            // Interactive Background
             const articlesSection = document.getElementById('artigos');
             if (articlesSection) {
-                 const articlesBg = document.getElementById('artigos-bg');
+                const articlesBg = document.getElementById('artigos-bg');
                 articlesSection.addEventListener('mousemove', e => {
                     const rect = articlesSection.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -204,7 +264,6 @@
                 });
             }
 
-            // 3D Hover Effect
             const cards = document.querySelectorAll('.insight-card-container');
             cards.forEach(cardContainer => {
                 const card = cardContainer.querySelector('.insight-card');
@@ -232,56 +291,108 @@
                 });
             });
 
-            // Article Modal Logic
-            const articlesData = [
-                { id: 0, title: 'AIOps na Prática', category: 'AIOps', color: 'text-purple-400', content: `<p>A observabilidade tradicional é reativa. Esperamos que um alerta dispare para começar a investigar. O AIOps inverte esta lógica.</p><p>Ao aplicar modelos de Machine Learning sobre métricas de séries temporais (como as do Prometheus), podemos identificar desvios subtis no comportamento normal de um sistema *antes* que eles se tornem incidentes críticos. Isto significa menos tempo em "salas de guerra" e mais tempo a inovar.</p><p>A verdadeira força do AIOps não é substituir engenheiros, mas sim filtrar o ruído, correlacionar eventos de múltiplas fontes (logs, métricas, traces) e apresentar uma causa provável, permitindo que a equipa de SRE se foque na solução estratégica em vez de perder horas a diagnosticar.</p>` },
-                { id: 1, title: 'Implementando Zero Trust', category: 'Segurança', color: 'text-pink-400', content: `<p>O modelo de segurança baseado em perímetro (firewalls, VPNs) está obsoleto na era da nuvem. O Zero Trust parte do princípio de que nenhuma requisição, interna ou externa, é confiável por padrão.</p><p>Com ferramentas como o Cilium, que utiliza o poder do eBPF no kernel do Linux, podemos aplicar políticas de segurança baseadas na identidade criptográfica de um serviço, e não no seu endereço IP, que é efémero em ambientes de contêineres. Isto permite-nos criar regras granulares como "O serviço de pagamentos só pode comunicar com a base de dados de transações", independentemente de onde esses serviços estejam a correr.</p><p>O resultado é uma superfície de ataque drasticamente reduzida e uma segurança que se adapta dinamicamente à sua arquitetura.</p>` },
-                { id: 2, title: 'O Futuro do DevOps', category: 'Platform Engineering', color: 'text-sky-400', content: `<p>A promessa do DevOps era quebrar os silos entre desenvolvimento e operações. No entanto, em muitas empresas, isto resultou em programadores sobrecarregados com a complexidade da infraestrutura (Kubernetes, Terraform, etc.).</p><p>O Platform Engineering resolve este problema. O objetivo é criar uma "plataforma interna" que abstrai a complexidade da infraestrutura e oferece aos programadores uma experiência de self-service. Com ferramentas como o Backstage, podemos criar um portal centralizado onde um programador pode, com poucos cliques, criar um novo microsserviço com todo o pipeline de CI/CD, segurança e observabilidade já configurados.</p><p>A métrica de sucesso deixa de ser a "velocidade de deploy" e passa a ser a "autonomia e produtividade do programador", o que gera um impacto muito maior no negócio.</p>` },
-            ];
+            // Article Viewer Logic
+            const overlay = document.getElementById('article-viewer-overlay');
+            const viewerCard = document.getElementById('article-viewer-card');
+            const closeBtn = document.getElementById('close-article-modal');
+            let originalCard = null;
 
-            const articleModal = document.getElementById('article-modal');
-            const closeArticleModalBtn = document.getElementById('close-article-modal');
+            function openArticle(articleId) {
+                originalCard = document.querySelector(`.insight-card-container[data-article-id='${articleId}']`);
+                if (!originalCard) return;
 
-            function openArticleModal(articleId) {
-                const article = articlesData.find(a => a.id === articleId);
+                const article = articlesData.find(a => a.id === parseInt(articleId));
                 if (!article) return;
-                
-                const articleModalTitle = document.getElementById('article-modal-title');
-                const articleModalCategory = document.getElementById('article-modal-category');
-                const articleModalContent = document.getElementById('article-modal-content');
 
-                if (articleModalTitle) articleModalTitle.textContent = article.title;
-                if (articleModalTitle) articleModalTitle.className = `text-3xl font-bold mb-4 ${article.color}`;
-                if (articleModalCategory) articleModalCategory.textContent = article.category;
-                if (articleModalCategory) articleModalCategory.className = `font-semibold uppercase tracking-wider text-sm mb-6 ${article.color}`;
-                if (articleModalContent) articleModalContent.innerHTML = article.content;
-                if (articleModal) articleModal.classList.add('visible');
+                // Populate viewer
+                document.getElementById('article-modal-title').textContent = article.title;
+                document.getElementById('article-modal-title').className = `text-3xl font-bold mb-4 text-${article.colorClass}-400`;
+                document.getElementById('article-modal-category').textContent = article.category;
+                document.getElementById('article-modal-category').className = `font-semibold uppercase tracking-wider text-sm mb-6 text-${article.colorClass}-400`;
+                document.getElementById('article-modal-content').innerHTML = article.content;
+                
+                const rect = originalCard.getBoundingClientRect();
+
+                viewerCard.style.position = 'fixed';
+                viewerCard.style.top = `${rect.top}px`;
+                viewerCard.style.left = `${rect.left}px`;
+                viewerCard.style.width = `${rect.width}px`;
+                viewerCard.style.height = `${rect.height}px`;
+                viewerCard.className = `article-viewer-card insight-card p-8 rounded-xl interactive-border interactive-border-${article.colorClass}`;
+                viewerCard.style.opacity = '1';
+                viewerCard.style.pointerEvents = 'auto';
+                
+                originalCard.classList.add('hide-original');
+                overlay.classList.add('visible');
+
+                // Animate to center
+                setTimeout(() => {
+                    viewerCard.style.transition = 'all 0.5s cubic-bezier(0.76, 0, 0.24, 1)';
+                    const targetWidth = Math.min(900, window.innerWidth * 0.9);
+                    viewerCard.style.width = `${targetWidth}px`;
+                    viewerCard.style.height = 'auto';
+                    viewerCard.style.top = '50%';
+                    viewerCard.style.left = '50%';
+                    viewerCard.style.transform = 'translate(-50%, -50%)';
+                    viewerCard.classList.add('visible');
+                }, 50);
             }
 
-            function closeArticleModal() {
-                if (articleModal) articleModal.classList.remove('visible');
+            function closeArticle() {
+                if (!originalCard) return;
+                
+                const rect = originalCard.getBoundingClientRect();
+                viewerCard.classList.remove('visible');
+                viewerCard.style.transition = 'all 0.5s cubic-bezier(0.76, 0, 0.24, 1)';
+                viewerCard.style.top = `${rect.top}px`;
+                viewerCard.style.left = `${rect.left}px`;
+                viewerCard.style.width = `${rect.width}px`;
+                viewerCard.style.height = `${rect.height}px`;
+                viewerCard.style.transform = '';
+                
+                overlay.classList.remove('visible');
+                
+                setTimeout(() => {
+                    viewerCard.style.opacity = '0';
+                    viewerCard.style.pointerEvents = 'none';
+                    originalCard.classList.remove('hide-original');
+                    originalCard = null;
+                }, 500);
             }
             
-            document.body.addEventListener('click', (e) => {
-                const link = e.target.closest('.article-details-link');
-                if (link) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const articleId = parseInt(link.dataset.articleId, 10);
-                    openArticleModal(articleId);
+            articlesGrid.addEventListener('click', (e) => {
+                const cardContainer = e.target.closest('.insight-card-container');
+                if (cardContainer) {
+                    const articleId = cardContainer.dataset.articleId;
+                    openArticle(articleId);
                 }
             });
 
-            if (closeArticleModalBtn) {
-                closeArticleModalBtn.addEventListener('click', closeArticleModal);
-            }
-            if (articleModal) {
-                articleModal.addEventListener('click', (e) => {
-                    if (e.target === articleModal) {
-                        closeArticleModal();
+            closeBtn.addEventListener('click', closeArticle);
+            overlay.addEventListener('click', closeArticle);
+
+             // Initialize Swiper
+            new Swiper('.articles-swiper', {
+                loop: false,
+                slidesPerView: 1,
+                spaceBetween: 30,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
                     }
-                });
-            }
+                }
+            });
         });
     </script>
 </body>
