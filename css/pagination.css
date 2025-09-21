@@ -1,0 +1,20 @@
+/* Pagination Styles */
+.pagination-btn {
+    background-color: var(--gray-800);
+    border: 1px solid var(--sky-500);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: var(--sky-500);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -1,0 +1,69 @@
+/* Toolbox Styles */
+.filter-btn {
+    background-color: transparent;
+    border: 1px solid;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn[data-filter="all"] {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #a0aec0;
+}
+.filter-btn[data-filter="ai"] {
+    border-color: var(--purple-500);
+    color: var(--purple-500);
+}
+.filter-btn[data-filter="devops"] {
+    border-color: var(--green-400);
+    color: var(--green-400);
+}
+.filter-btn[data-filter="cloud"] {
+    border-color: var(--orange-400);
+    color: var(--orange-400);
+}
+.filter-btn[data-filter="app_data"] {
+    border-color: var(--yellow-400);
+    color: var(--yellow-400);
+}
+
+.filter-btn:hover {
+    color: white;
+    opacity: 0.8;
+}
+
+.filter-btn.active {
+    color: white;
+    opacity: 1;
+}
+
+.filter-btn[data-filter="all"].active {
+    background-color: var(--sky-500);
+    border-color: var(--sky-500);
+}
+.filter-btn[data-filter="ai"].active {
+    background-color: var(--purple-500);
+}
+.filter-btn[data-filter="devops"].active {
+    background-color: var(--green-400);
+}
+.filter-btn[data-filter="cloud"].active {
+    background-color: var(--orange-400);
+}
+.filter-btn[data-filter="app_data"].active {
+    background-color: var(--yellow-400);
+}
+
+.tool-card {
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    border-top: 3px solid transparent;
+}
+
+.tool-card-ai { border-top-color: var(--purple-500); }
+.tool-card-devops { border-top-color: var(--green-400); }
+.tool-card-cloud { border-top-color: var(--orange-400); }
+.tool-card-app_data { border-top-color: var(--yellow-400); }

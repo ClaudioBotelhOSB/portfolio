@@ -1,0 +1,43 @@
+/* Material-UI Inspired Form */
+.form-field {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 12px 12px 12px;
+    background: transparent;
+    border: 1px solid var(--gray-700);
+    border-radius: 8px;
+    color: white;
+    transition: border-color 0.2s;
+}
+
+.form-label {
+    position: absolute;
+    left: 12px;
+    top: 14px;
+    color: #a0aec0;
+    background-color: #0a0a0a;
+    padding: 0 4px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.form-input:focus + .form-label,
+.form-input:not(:placeholder-shown) + .form-label {
+    top: -10px;
+    left: 8px;
+    font-size: 0.75rem;
+    color: var(--sky-500);
+}
+
+.form-input:focus {
+    border-color: var(--sky-500);
+    outline: none;
+}
+
+textarea.form-input {
+    min-height: 120px;
+}

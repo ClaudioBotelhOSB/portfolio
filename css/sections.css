@@ -1,0 +1,75 @@
+/* For AI response simulation in contact form */
+.ai-response {
+    white-space: pre-wrap;
+    background: #1a1a1a;
+    border-left: 3px solid var(--sky-500);
+}
+
+/* Accordion Styles (Used in Methodology, but can be generic) */
+.accordion-item .accordion-header {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.accordion-item .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 1000px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.accordion-item .accordion-icon {
+    transition: transform 0.3s ease-out;
+}
+
+.accordion-item.active .accordion-icon {
+    transform: rotate(45deg);
+}
+
+.trending-badge {
+    background-color: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border: 1px solid rgba(234, 179, 8, 0.5);
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 99px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+/* Process Steps (Contact Section) */
+.process-step-container {
+    position: relative;
+}
+
+.process-step {
+    cursor: pointer;
+}
+
+.process-step .step-circle {
+    transition: all 0.3s ease;
+}
+
+.process-step-container.active .process-step .step-circle {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--glow-color);
+}
+
+.process-description {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, margin-top 0.5s ease-out, opacity 0.5s ease-out;
+    opacity: 0;
+    grid-column: 1 / -1;
+}
+
+.process-step-container.active .process-description {
+    max-height: 500px;
+    margin-top: 1rem;
+    opacity: 1;
+}

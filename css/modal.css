@@ -1,0 +1,26 @@
+/* Modal Styles */
+.modal-container {
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    transition: transform 0.3s ease;
+}
+
+.modal-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-container:not(.visible) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-container.visible .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-container:not(.visible) .modal-content {
+    transform: translateY(20px) scale(0.95);
+}
