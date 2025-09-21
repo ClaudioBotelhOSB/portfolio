@@ -62,7 +62,7 @@ function renderProjects() {
             </div>
         `;
         projectsContainer.appendChild(card);
-        observer.observe(card);
+        // observer.observe(card);
     });
 
     updatePaginationButtons();
