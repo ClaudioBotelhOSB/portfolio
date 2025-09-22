@@ -12,28 +12,6 @@ function initAboutUs() {
         observer.observe(el);
     });
 
-    // Interactive Background
-    const philosophySection = document.getElementById('about_us');
-    if (philosophySection) {
-        const colorStart = [14, 165, 233]; // RGB for --sky-500
-        const colorEnd = [139, 92, 246]; // RGB for --purple-500
-
-        philosophySection.addEventListener('mousemove', e => {
-            const rect = philosophySection.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            philosophySection.style.setProperty('--mouse-x', `${x}px`);
-            philosophySection.style.setProperty('--mouse-y', `${y}px`);
-
-            const percent = x / rect.width;
-            const r = Math.round(colorStart[0] * (1 - percent) + colorEnd[0] * percent);
-            const g = Math.round(colorStart[1] * (1 - percent) + colorEnd[1] * percent);
-            const b = Math.round(colorStart[2] * (1 - percent) + colorEnd[2] * percent);
-
-            philosophySection.style.setProperty('--aurora-color', `rgba(${r}, ${g}, ${b}, 0.15)`);
-        });
-    }
-
     // 3D Hover Effect
     const cards = document.querySelectorAll('#about_us .profile-card');
     cards.forEach(card => {

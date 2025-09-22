@@ -130,9 +130,12 @@ function initProjects() {
                                         <ul class="space-y-1">${breakdownTooltipContent}</ul>
                                     </div>
                                 </div>
-                                <div class="mt-4">
+                                <div class="mt-4 tool-icon-container">
                                     <p class="text-sm font-semibold mb-2 text-gray-300">Tecnologias Utilizadas:</p>
                                     <div class="flex flex-wrap gap-2">${toolIcons}</div>
+                                    <div class="tool-tooltip">
+                                        <p class="text-sm text-left">As principais tecnologias e ferramentas que foram utilizadas para construir este projeto.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
