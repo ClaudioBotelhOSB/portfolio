@@ -1,4 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Main script loaded');
+
+    // Initialize a single IntersectionObserver for all fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+    // Initialize scripts for each section
+    if (document.getElementById('home')) {
+        initHome();
+    }
+    if (document.getElementById('metodologia')) {
+        initMetodologia();
+    }
+    if (document.getElementById('toolbox')) {
+        initToolbox();
+    }
+    if (document.getElementById('about_us')) {
+        initAboutUs();
+    }
+    if (document.getElementById('process')) {
+        initProcess();
+    }
+    if (document.getElementById('projects')) {
+        initProjects();
+    }
+    if (document.getElementById('articles')) {
+        initArticles();
+    }
+    if (document.getElementById('testimonials')) {
+        initTestimonials();
+    }
+
+    // Global aurora background effect
     const main = document.querySelector('main');
     if (main) {
         const colorStart = [14, 165, 233]; // RGB for --sky-500
@@ -22,58 +62,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
-    const sections = [
-        'home',
-        'metodologia',
-        'toolbox',
-        'about_us',
-        'process',
-        'projects',
-        'articles',
-        'testimonials'
-    ];
-
-    const loadSections = sections.map(section => {
-        return fetch(`src/sections/${section}.html`)
-            .then(response => response.text())
-            .then(data => {
-                const placeholder = document.getElementById(`${section}-placeholder`);
-                if (placeholder) {
-                    placeholder.innerHTML = data;
-                }
-            });
-    });
-
-    Promise.all(loadSections).then(() => {
-        console.log('All sections loaded');
-
-        // Initialize scripts for each section now that the HTML is in the DOM
-        if (document.getElementById('home')) {
-            initHome();
-        }
-        if (document.getElementById('metodologia')) {
-            initMetodologia();
-        }
-        if (document.getElementById('toolbox')) {
-            initToolbox();
-        }
-        if (document.getElementById('about_us')) {
-            initAboutUs();
-        }
-        if (document.getElementById('process')) {
-            initProcess();
-        }
-        if (document.getElementById('projects')) {
-            initProjects();
-        }
-        if (document.getElementById('articles')) {
-            initArticles();
-        }
-        if (document.getElementById('testimonials')) {
-            initTestimonials();
-        }
-    }).catch(error => {
-        console.error('Error loading sections:', error);
-    });
 });
