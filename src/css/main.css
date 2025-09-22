@@ -1,0 +1,707 @@
+/*
+Main stylesheet for the consolidated single-page portfolio.
+This file contains all the refactored and consolidated CSS from the original HTML files.
+*/
+
+/* ==========================================================================
+   Global Styles & Variables from home.html
+   ========================================================================== */
+
+:root {
+    --sky-500: #0ea5e9;
+    --purple-500: #8b5cf6;
+    --gray-400: #9ca3af;
+    --green-400: #4ade80;
+    --orange-400: #fb923c;
+    --yellow-400: #facc15;
+    --cyan-400: #22d3ee;
+    --pink-400: #f472b6;
+    --orange-500: #f97316;
+    --pink-500: #ec4899;
+    --green-500: #22c55e;
+    --teal-500: #14b8a6;
+    --red-500: #ef4444;
+    --yellow-500: #eab308;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: #e5e5e5;
+    background: #0a0a0a;
+    scroll-behavior: smooth;
+}
+
+/* ==========================================================================
+   Home Section Styles
+   ========================================================================== */
+
+#hero-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.text-shadow {
+     text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+}
+
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.typewriter-cursor {
+    display: inline-block;
+    width: 4px;
+    height: 1em;
+    background-color: var(--sky-500);
+    animation: blink 0.8s infinite;
+    vertical-align: bottom;
+    margin-left: 4px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.cta-button {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
+}
+
+/* ==========================================================================
+   Shared Component Styles (from metodologia.html)
+   ========================================================================== */
+
+/* Interactive Border Effect */
+.interactive-border {
+    position: relative;
+}
+.interactive-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0.75rem; /* rounded-xl */
+    padding: 1px;
+    background: radial-gradient(150px circle at var(--mouse-x) var(--mouse-y), var(--glow-color), transparent 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: subtract;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.interactive-border:hover::before {
+    opacity: 1;
+}
+.interactive-border-sky {
+    --glow-color: rgba(14, 165, 233, 0.5);
+}
+.interactive-border-purple {
+    --glow-color: rgba(139, 92, 246, 0.5);
+}
+.interactive-border-green {
+    --glow-color: rgba(74, 222, 128, 0.5);
+}
+.interactive-border-orange {
+    --glow-color: rgba(251, 146, 60, 0.5);
+}
+.interactive-border-yellow {
+    --glow-color: rgba(250, 204, 21, 0.5);
+}
+.interactive-border-cyan {
+    --glow-color: rgba(34, 211, 238, 0.5);
+}
+
+.tool-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background: rgba(31, 41, 59, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    width: 240px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+/* Card Flip Effect */
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+
+/* ==========================================================================
+   Metodologia Section Styles
+   ========================================================================== */
+
+#metodologia {
+    position: relative;
+    overflow: hidden;
+}
+
+#metodologia::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y),
+        rgba(139, 92, 246, 0.15),
+        transparent 70%
+    );
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#metodologia:hover::before {
+    opacity: 1;
+}
+
+.methodology-card {
+    cursor: pointer;
+    min-height: 280px;
+    perspective: 1500px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-style: preserve-3d;
+}
+
+.methodology-card.is-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   Process Section (Timeline) Styles
+   ========================================================================== */
+
+/* This will be the generic background for sections that need it */
+.dot-grid-background {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+    background-size: 40px 40px;
+    z-index: 0;
+}
+
+.timeline-item {
+    position: relative;
+    width: 100%;
+    padding-left: 50px; /* Espaço para o ponto e a linha */
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.timeline-dot {
+    position: absolute;
+    left: -11px;
+    top: 1.25rem; /* Alinha com o centro do ícone */
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #0a0a0a;
+    border: 3px solid #374151; /* cinza escuro */
+    transition: all 0.3s ease;
+    transform: scale(0);
+}
+.timeline-item.visible .timeline-dot {
+    transform: scale(1);
+    border-color: var(--color);
+    box-shadow: 0 0 15px var(--color);
+}
+
+.timeline-card-details {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.5s ease-out, transform 0.5s ease-out, margin-top 0.5s ease-out;
+    transform: translateY(-10px);
+}
+.timeline-item.active .timeline-card-details {
+    max-height: 200px; /* Altura suficiente para o conteúdo */
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 1rem;
+}
+.timeline-item.active .timeline-card-header {
+    border-color: var(--color);
+    box-shadow: 0 0 25px var(--color);
+}
+
+/* ==========================================================================
+   Testimonials Section Styles
+   ========================================================================== */
+
+.testimonial-card-container {
+    width: 100%;
+    height: 450px;
+    perspective: 1500px;
+    cursor: pointer;
+}
+.testimonial-card-container .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-style: preserve-3d;
+}
+.testimonial-card-container.is-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.video-thumbnail {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.play-button {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+}
+.video-thumbnail:hover .play-button {
+    transform: translate(-50%, -50%) scale(1);
+    background: rgba(14, 165, 233, 0.7);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    /* Tablet */
+    #metodologia .grid, #toolbox .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    #projects .projects-swiper {
+        /* Swiper handles this with breakpoints in JS */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile */
+    #home h1 {
+        font-size: 2.5rem; /* 40px */
+    }
+    #metodologia .grid, #toolbox .grid, #about_us .grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    .profile-card .flex-col {
+        flex-direction: column !important;
+    }
+}
+
+/* ==========================================================================
+   Articles Section Styles
+   ========================================================================== */
+
+.insight-card {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    height: 100%;
+    cursor: pointer;
+}
+.insight-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.insight-card-container.hide-original {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Full Screen Article Viewer */
+#article-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+#article-viewer-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.article-viewer-card {
+    position: fixed;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+}
+.article-viewer-content {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.3s;
+}
+.article-viewer-card.visible .article-viewer-content {
+    opacity: 1;
+}
+
+.articles-swiper .swiper-button-next, .articles-swiper .swiper-button-prev {
+    background: rgba(31, 41, 59, 0.5);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+}
+.articles-swiper .swiper-button-next:hover, .articles-swiper .swiper-button-prev:hover {
+    background: rgba(14, 165, 233, 0.5);
+    color: white;
+}
+.articles-swiper .swiper-button-next::after, .articles-swiper .swiper-button-prev::after {
+    font-size: 18px;
+}
+
+/* ==========================================================================
+   Projects Section Styles
+   ========================================================================== */
+
+.project-card {
+    width: 100%;
+    height: 480px; /* Fixed height for consistency */
+    perspective: 1500px;
+    cursor: pointer;
+}
+
+.project-card .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-style: preserve-3d;
+}
+
+.project-card.is-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.project-card .card-front, .project-card .card-back {
+    background: rgba(23, 23, 23, 0.7);
+    padding: 1.5rem;
+}
+
+.project-card .card-back h5 {
+    margin-bottom: 0.5rem;
+}
+.project-card .card-back p {
+    font-size: 0.85rem;
+    color: var(--gray-400);
+}
+
+.project-category-tag {
+    align-self: flex-start;
+    margin-bottom: 1rem;
+}
+
+.tool-icon-container, .key-metric, .breakdown-bar-container {
+    position: relative;
+}
+
+.key-metric {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.breakdown-bar {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    display: flex;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+/* Swiper Styles (can be consolidated later) */
+.swiper-slide {
+    height: auto;
+}
+
+.projects-swiper, .articles-swiper, .testimonials-swiper {
+    padding-bottom: 4rem !important;
+}
+
+.swiper-button-next, .swiper-button-prev {
+    color: var(--gray-400);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover {
+    color: var(--sky-500);
+    transform: scale(1.2);
+}
+.swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 24px;
+    font-weight: 900;
+}
+.swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+}
+.swiper-pagination-bullet-active {
+    background: var(--sky-500);
+}
+
+/* ==========================================================================
+   About Us Section Styles
+   ========================================================================== */
+
+#about_us {
+    position: relative;
+    overflow: hidden;
+}
+
+#about_us::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y),
+        var(--aurora-color, rgba(14, 165, 233, 0.15)),
+        transparent 70%
+    );
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#about_us:hover::before {
+    opacity: 1;
+}
+
+.profile-card {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+ .profile-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.photo-container {
+    position: relative;
+}
+
+.profile-photo {
+    border-radius: 50%;
+    transform: scale(1.05);
+    filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.4));
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.profile-card:hover .profile-photo {
+    transform: scale(1.15) translateY(-5px);
+}
+
+/* ==========================================================================
+   Toolbox Section Styles
+   ========================================================================== */
+
+#tools-grid {
+    perspective: 1000px;
+}
+
+.filter-btn {
+    background-color: transparent;
+    border: 1px solid;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+}
+
+.filter-btn[data-filter="all"] { border-color: rgba(255, 255, 255, 0.4); color: #a0aec0; }
+.filter-btn[data-filter="ai"] { border-color: var(--purple-500); color: var(--purple-500); }
+.filter-btn[data-filter="devops"] { border-color: var(--green-400); color: var(--green-400); }
+.filter-btn[data-filter="cloud"] { border-color: var(--orange-400); color: var(--orange-400); }
+.filter-btn[data-filter="app_data"] { border-color: var(--yellow-400); color: var(--yellow-400); }
+.filter-btn[data-filter="strategy"] { border-color: var(--cyan-400); color: var(--cyan-400); }
+.filter-btn:hover { color: white; opacity: 0.8; }
+.filter-btn.active { color: white; opacity: 1; }
+.filter-btn[data-filter="all"].active { background-color: var(--sky-500); border-color: var(--sky-500); }
+.filter-btn[data-filter="ai"].active { background-color: var(--purple-500); }
+.filter-btn[data-filter="devops"].active { background-color: var(--green-400); }
+.filter-btn[data-filter="cloud"].active { background-color: var(--orange-400); }
+.filter-btn[data-filter="app_data"].active { background-color: var(--yellow-400); }
+.filter-btn[data-filter="strategy"].active { background-color: var(--cyan-400); }
+
+.tool-card {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+    transform-style: preserve-3d;
+    border-top: 3px solid transparent;
+    padding: 2.5rem 1rem 1.5rem 1rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.tool-card.dimmed {
+    opacity: 0.4;
+    transform: scale(0.95);
+}
+
+.tool-card.highlighted {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--glow-color);
+}
+
+.tool-icon-wrapper {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    background: rgba(31, 41, 59, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tool-icon {
+    width: 36px;
+    height: 36px;
+    color: #e5e5e5;
+}
+
+.tool-card h4 { font-size: 1rem; }
+.tool-card p { font-size: 0.8rem; margin-top: 0.25rem; color: #a0aec0; }
+.tool-card-ai { border-top-color: var(--purple-500); }
+.tool-card-devops { border-top-color: var(--green-400); }
+.tool-card-cloud { border-top-color: var(--orange-400); }
+.tool-card-app_data { border-top-color: var(--yellow-400); }
+.tool-card-strategy { border-top-color: var(--cyan-400); }
+
+.proficiency-dots {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+}
+.proficiency-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.proficiency-dots .dot.filled {
+    background-color: var(--glow-color);
+    box-shadow: 0 0 5px var(--glow-color);
+}
+
+.proficiency-filter {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    position: relative;
+}
+.proficiency-filter:not(.active) {
+    opacity: 0.6;
+}
+.proficiency-filter:hover {
+    opacity: 1;
+}
+
+#toolbox-helper {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.proficiency-filter:hover .tool-tooltip,
+.tool-icon-wrapper:hover .tool-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+.project-category-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
